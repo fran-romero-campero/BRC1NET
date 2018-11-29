@@ -1,6 +1,5 @@
 # R script for pre-processing 
 # Copyright (C) 2018  Francisco J. Romero-Campero, Pedro de los Reyes
-# Ana Belén Romero Losada
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of
@@ -12,12 +11,13 @@
 # You should have received a copy of the GNU General Public
 # License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors: Pedro de los Reyes Rodríguez
-#          Ana Belén Romero-Losada
-#          Francisco J. Romero-Campero
+# Authors: Francisco J. Romero-Campero
+#          Pedro de los Reyes Rodríguez
+#          
 # 
 # Contact: Francisco J. Romero-Campero - fran@us.es 
-# Date: August 2018
+#         
+# Date: November 2018
 
 ## A good introduction to XML format can be found here:
 ## https://www.w3schools.com/xml/xml_whatis.asp
@@ -61,6 +61,7 @@ colnames(attributes.df) <- attributes.names
 nodes.names <- vector(mode = "character",length = number.nodes)
 nodes.x.pos <- vector(mode = "character",length = number.nodes)
 nodes.y.pos <- vector(mode = "character",length = number.nodes)
+nodes.color <- vector(mode = "character",length = number.nodes)
 
 for(i in 1:number.nodes)
 {
@@ -69,6 +70,7 @@ for(i in 1:number.nodes)
   node.graphic.attrs <- xmlAttrs(xmlElementsByTagName(el = current.node, name = "graphics")[[1]])
   nodes.x.pos[i] <- node.graphic.attrs[["x"]]
   nodes.y.pos[i] <- node.graphic.attrs[["y"]]
+  nodes.color[i] <- node.graphic.attrs[["fill"]]
   
   node.attributes <- xmlElementsByTagName(el = current.node, name = "att")
 
@@ -79,29 +81,71 @@ for(i in 1:number.nodes)
   }
 }
 
-nodes.df <- data.frame(names=nodes.names,x.pos=nodes.x.pos,y.pos=nodes.y.pos)
+head(attributes.df)
+
+nodes.df <- data.frame(names=nodes.names,x.pos=nodes.x.pos,y.pos=nodes.y.pos,color=nodes.color)
+nodes.df <- cbind(nodes.df,attributes.df)
 head(nodes.df)
 
-## Add info regarding clusters
-peak.zt0 <- read.table(file="clusters/peak_ZT0.txt",as.is=T)[[1]]
-peak.zt4 <- read.table(file="clusters/peak_ZT4.txt",as.is=T)[[1]]
-peak.zt8 <- read.table(file="clusters/peak_ZT8.txt",as.is=T)[[1]]
-peak.zt12 <- read.table(file="clusters/peak_ZT12.txt",as.is=T)[[1]]
-peak.zt16 <- read.table(file="clusters/peak_ZT16.txt",as.is=T)[[1]]
-peak.zt20 <- read.table(file="clusters/peak_ZT20.txt",as.is=T)[[1]]
+## Remove selected column
+colnames(nodes.df)
+nodes.df <- nodes.df[,c(-5,-6,-7)]
+head(nodes.df)
 
-cluster.genes <- c(peak.zt0, peak.zt4,peak.zt8,peak.zt12,peak.zt16,peak.zt20)
-clusters.names <- paste0("peak", c(rep(0,length(peak.zt0)),
-                                   rep(4,length(peak.zt4)),
-                                   rep(8,length(peak.zt8)),
-                                   rep(12,length(peak.zt12)),
-                                   rep(16,length(peak.zt16)),
-                                   rep(20,length(peak.zt20))))  
+## Load network in gml format
+library(igraph)
+brc1.graph <- read.graph(file="BRC1_transcriptional_network.graphml", format = "graphml")
+vertex.names <- as.vector(nodes.df$names)
 
-names(clusters.names) <- cluster.genes
+## Store network connectivity
+network.tfs <- read.table(file="network_tfs.txt",header=T,as.is=T)
+network.adj <- as.data.frame(matrix(0,nrow=number.nodes,ncol=nrow(network.tfs)))
+colnames(network.adj) <- network.tfs$AGI
+is.data.frame(network.adj)
 
-cluster.classification <- clusters.names[as.vector(nodes.df$names)]
-names(cluster.classification) <- NULL
-nodes.df <- data.frame(nodes.df,cluster.classification)
-write.table(x = nodes.df, file = "attractor_network.tsv",quote = FALSE,sep = "\t",row.names = FALSE)
 
+## Initialise vectors to store topological parameters
+brc1.indegree <- vector(mode="numeric",length=length(vertex.names))
+brc1.outdegree <- vector(mode="numeric",length=length(vertex.names))
+brc1.trans <- vector(mode="numeric",length=length(vertex.names))
+brc1.close <- vector(mode="numeric",length=length(vertex.names))
+brc1.between <- vector(mode="numeric",length=length(vertex.names))
+brc1.eccent <- vector(mode="numeric",length=length(vertex.names))
+
+## Loop to retrieve regulators and topological parameters for each node.
+for(i in 1:number.nodes)
+{
+  network.adj[i,neighbors(graph = brc1.graph, v=vertex.names[i], mode="in")$name] <- 1
+
+  brc1.indegree[i] <- degree(graph = brc1.graph, v=vertex.names[i],mode = "in")
+  brc1.outdegree[i] <- degree(graph = brc1.graph, v=vertex.names[i],mode = "out")
+  brc1.trans[i] <- transitivity(graph = brc1.graph, type = "local", vids=vertex.names[i])
+  brc1.close[i] <- closeness(graph = brc1.graph, vids=vertex.names[i], normalized = TRUE)
+  brc1.between[i] <- betweenness(graph = brc1.graph, v = vertex.names[i], normalized = TRUE)
+  brc1.eccent[i] <- eccentricity(graph = brc1.graph, v = vertex.names[i])
+}
+
+colnames(network.adj) <- network.tfs$name
+head(network.adj)
+
+topological.parameters <- data.frame(indegree = brc1.indegree,
+                                     outdegree = brc1.outdegree,
+                                     transitivity = brc1.trans,
+                                     closeness = brc1.close,
+                                     betweenness = brc1.between,
+                                     eccentricity = brc1.eccent)
+head(topological.parameters)
+## Add connectivity info
+nodes.df <- cbind(nodes.df,network.adj)
+nodes.df <- cbind(nodes.df,topological.parameters)
+head(nodes.df)
+
+is.data.frame(nodes.df)
+
+## Write network representation
+write.table(nodes.df, 
+            file="brc1_transcriptional_network.tsv", 
+            sep = "\t", 
+            quote = FALSE,
+            row.names = FALSE)
+network.data <- read.table(file="brc1_transcriptional_network.tsv",header = TRUE,as.is=TRUE,sep="\t",comment.char = "")
