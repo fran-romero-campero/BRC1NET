@@ -6,10 +6,16 @@ library(org.At.tair.db)
 
 ## Load network
 network.data <- read.table(file="data/brc1_transcriptional_network.tsv",header = TRUE,as.is=TRUE,sep="\t",comment.char = "")
-head(network.data)
+#head(network.data)
+colnames(network.data)[56] <- "ATHB-53"
+colnames(network.data)[54] <- "DOF5-4"
+colnames(network.data)[51] <- "NAC6-ORE1"
+colnames(network.data)[46] <- "ATHB-40"
+colnames(network.data)[34] <- "ATHB-6"
+colnames(network.data)[33] <- "ATHB-21"
 
 
-## Tranforming coordinates for a better visualization
+## Transforming coordinates for a better visualization
 x.coord <- as.numeric(network.data$y.pos)
 y.coord <- as.numeric(network.data$x.pos)
 
@@ -17,8 +23,6 @@ y.coord <- as.numeric(network.data$x.pos)
 genes <- sort(network.data$name)
 
 ## Create tair links for genes
-
-i <- 1
 gene.links <- vector(mode="character",length=length(genes))
 for(i in 1:length(genes))
 {
@@ -82,14 +86,15 @@ ui <- fluidPage(
                          actionButton(inputId = "button_indegree",label = "Select Genes")
                          ),
         
-        # conditionalPanel(condition = "input.topological_parameter == 'Transitivity'",
-        #                  sliderInput(inputId = "transitivity_range",
-        #                              label="Choose a transitivity range:",
-        #                              min=min(network.data$transitivity),
-        #                              max=max(network.data$transitivity),
-        #                              value=c(min(network.data$transitivity),max(network.data$transitivity))),
-        #                  actionButton(inputId = "button_transitivity",label = "Select Genes")
-        # ),
+
+        conditionalPanel(condition = "input.topological_parameter == 'Transitivity'",
+                         sliderInput(inputId = "transitivity_range",
+                                     label="Choose a transitivity range:",
+                                     min=min(network.data$transitivity),
+                                     max=max(network.data$transitivity),
+                                     value=c(min(network.data$transitivity),max(network.data$transitivity))),
+                         actionButton(inputId = "button_transitivity",label = "Select Genes")
+        ),
 
 #         sliderInput(inputId = "degree_range", label = h3("Degree Range"), min = 0, 
 #                     max = 11, value = c(2, 4)),
@@ -99,7 +104,7 @@ ui <- fluidPage(
         width = 3 
       ),
       
-      # Show a plot of the generated distribution
+      # Show a plot of the network and table with selected genes info
       mainPanel(
          plotOutput("networkPlot"),
          tags$br(),
@@ -125,10 +130,10 @@ ui <- fluidPage(
    )
 )
 
-# Define server logic required to draw a histogram
+# Define server logic required to represent the network
 server <- function(input, output) {
   
-  ## Initial/default visualization of ATTRACTOR
+  ## Initial/default visualization of BRC1 Network
   output$networkPlot <- renderPlot({
     ggplot(network.data, aes(x.pos,y.pos)) + 
       theme(panel.background = element_blank(), 
@@ -141,34 +146,12 @@ server <- function(input, output) {
   },height = 700)
   
 
-  ## Visualization of selected genes according to their degree
-  observeEvent(input$button_degree, {
-    print("aquí llego 3")
-    
-    node.degree <- network.data$indegree
-    degree.values <- input$degree_range
-    selected.genes.df <- subset(network.data, indegree >= degree.values[1] & indegree <= degree.values[2])
-    selected.nodes.colors <- selected.genes.df$color
-    
-    print(selected.genes.df)
-    print(selected.nodes.colors)
-    
-    output$networkPlot <- renderPlot({
-      ggplot(network.data, aes(x.pos,y.pos)) + 
-        theme(panel.background = element_blank(), 
-              panel.grid.major = element_blank(), 
-              panel.grid.minor = element_blank(),
-              axis.title = element_blank(),
-              axis.text = element_blank(),
-              axis.ticks.y = element_blank()) + 
-        geom_point(color=network.data$color,size=1) +
-        geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
-    },height = 700)
-  })
-
+  
+  
   ## Visualization of selected genes according to their degree
   observeEvent(input$button_tfs, {
     print("aquí llego 4")
+    
 
     if(length(input$selected.tfs) == 1)
     {
@@ -178,7 +161,11 @@ server <- function(input, output) {
     {
       gene.selection <- rowSums(network.data[,input$selected.tfs]) == length(input$selected.tfs)
       
+    } else if(length(input$selected.tfs) == 0)
+    {
+      gene.selection <- NULL
     }
+    
     selected.genes.df <- network.data[gene.selection,]
     selected.nodes.colors <- selected.genes.df$color
     
@@ -238,6 +225,34 @@ server <- function(input, output) {
     },escape=FALSE)
   })
   
+  ## Visualization of selected genes according to their transitivity
+  observeEvent(input$button_transitivity, {
+    print("aquí llego 6")
+    
+    trans.values <- input$transitivity_range
+    selected.genes.df <- subset(network.data, transitivity >= trans.values[1] & transitivity <= trans.values[2])
+    selected.nodes.colors <- selected.genes.df$color
+    
+    output$networkPlot <- renderPlot({
+      ggplot(network.data, aes(x.pos,y.pos)) +
+        theme(panel.background = element_blank(),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              axis.title = element_blank(),
+              axis.text = element_blank(),
+              axis.ticks.y = element_blank()) +
+        geom_point(color=network.data$color,size=1) +
+        geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
+    },height = 700)
+    
+    
+    selected.genes.df$names <- gene.links[selected.genes.df$names]
+    
+    output$output_table <- renderDataTable({
+      #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
+      selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
+    },escape=FALSE)
+  })
   
   
   
