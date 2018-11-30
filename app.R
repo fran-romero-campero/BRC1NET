@@ -225,8 +225,8 @@ server <- function(input, output) {
       
       for(i in 1:length(input$selected.tfs))
       {
-        tf.xpos <- subset(network.data, names == tf.ids[input_selected.tfs[i]])[["x.pos"]]
-        tf.ypos <- subset(network.data, names == tf.ids[input_selected.tfs[i]])[["y.pos"]]
+        tf.xpos <- subset(network.data, names == tf.ids[input$selected.tfs[i]])[["x.pos"]]
+        tf.ypos <- subset(network.data, names == tf.ids[input$selected.tfs[i]])[["y.pos"]]
         network.representation <- network.representation +
             annotate("segment",
                      x=rep(tf.xpos,nrow(selected.genes.df)),
