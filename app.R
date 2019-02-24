@@ -139,7 +139,7 @@ ui <- fluidPage(
       
       # Show a plot of the network and table with selected genes info
       mainPanel(
-         plotOutput("networkPlot"),
+         plotOutput("networkPlot",hover="plot_hover"),#click="plot_click"),
          tags$br(),
          tags$br(),
          tags$br(),
@@ -165,19 +165,35 @@ ui <- fluidPage(
 
 # Define server logic required to represent the network
 server <- function(input, output) {
-  
+
+  ## Default network representation 
+  default.representation <- ggplot(network.data, aes(x.pos,y.pos)) + 
+    theme(panel.background = element_blank(), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks.y = element_blank()) + 
+    geom_point(color=network.data$color,size=1)
+ 
   ## Initial/default visualization of BRC1 Network
   output$networkPlot <- renderPlot({
-    ggplot(network.data, aes(x.pos,y.pos)) + 
-      theme(panel.background = element_blank(), 
-            panel.grid.major = element_blank(), 
-            panel.grid.minor = element_blank(),
-            axis.title = element_blank(),
-            axis.text = element_blank(),
-            axis.ticks.y = element_blank()) + 
-      geom_point(color=network.data$color,size=1)
+    print("default")
+    default.representation
   },height = 700)
   
+  
+#  observeEvent(input$plot_click, {
+    output$networkPlot <- renderPlot({
+      print("click")
+      default.representation +
+        annotate("text",
+                 x = input$plot_hover$x + 1,
+                 y = input$plot_hover$y + 1, 
+                 label="lala",size=10)
+    },height = 700)
+  
+  #})  
 
   ## Visualization of selected genes according to their degree
   observeEvent(input$button_tfs, {

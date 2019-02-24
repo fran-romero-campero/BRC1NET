@@ -1,0 +1,12 @@
+name: BRC1_transcriptional_network
+title: BRC1_transcriptional_network
+username:
+account: frannetworks
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 597719
+bundleId: 1730994
+url: https://frannetworks.shinyapps.io/BRC1_transcriptional_network/
+when: 1543575704.77167
+asMultiple: FALSE
+asStatic: FALSE
