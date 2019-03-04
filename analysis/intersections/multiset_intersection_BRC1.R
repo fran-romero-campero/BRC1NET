@@ -149,67 +149,6 @@ intersectSets <- function(tf1,tf2,set.of.genes, alias,gene.descriptions){
 intersectSets(tf1 = tf1, tf2 = tf2, set.of.genes = genes.peak.zt, alias=alias,gene.descriptions = description)
 
 
-# #####----Loop to perform all possible intersections between two TFs and a cluster-----####
-# 
-# tf.files <- list.files(path = "../../../web_apps/peak_visualizer/data/targets_in_network/targets_to_intersect/", pattern = "targets")
-# gene.files <- list.files(path = "../../../web_apps/peak_visualizer/data/clusters/by_peaks", pattern = "peak")
-# 
-# #Initialize matrix to store the results
-# intersection.table <- matrix(ncol=6)
-# colnames(intersection.table) <- c("TF1", "TF2", "Cluster", "P value", 
-#                                   "Enrichment", "Intersection Genes") 
-# 
-# #Initialize vector to add it as row into the matrix
-# current.intersection <- c()
-# 
-# head(intersection.table)
-# 
-# i <- 1
-# j <- 5
-# k <- 5
-# for (i in 1:length(tf.files))
-# {
-#   for (j in 1: length(tf.files))
-#   {
-#     for (k in 1:length(gene.files))
-#     {
-#       tf1 <- read.table(file=paste0("../../../web_apps/peak_visualizer/data/targets_in_network/",tf.files[i]),
-#                         header = TRUE, as.is = TRUE)
-#       tf2 <- read.table(file=paste0("../../../web_apps/peak_visualizer/data/targets_in_network/",tf.files[j]),
-#                         header = TRUE, as.is = TRUE)
-#       set.of.genes <- read.table(file=paste0("../../../web_apps/peak_visualizer/data/clusters/by_peaks/",gene.files[k]),
-#                                  header = FALSE, as.is = TRUE)
-#       
-#       if(tf.files[i] != tf.files[j])
-#       {
-#         print("TEST")
-#         result <- intersectSets(tf1,tf2,set.of.genes)
-#         p.value <- result[1][[1]]
-#         enrichment <- result[2][[1]]
-#         intersect.genes <- result[3][[1]]
-#         
-#         if (length(intersect.genes) !=0 & p.value < 0.000005)
-#         {
-#           print("HIT")
-#           current.intersection[1] <- strsplit(tf.files[i], split = "_")[[1]][1]
-#           current.intersection[2] <- strsplit(tf.files[j], split = "_")[[1]][1]
-#           current.intersection[3] <- strsplit(gene.files[k], split = ".txt")[[1]][1]
-#           current.intersection[4] <- p.value
-#           current.intersection[5] <- enrichment
-#           current.intersection[6] <- paste(intersect.genes, collapse= ",")
-#           intersection.table <- rbind(intersection.table, current.intersection)
-#           
-#         }
-#       }
-#         
-#       
-#     }
-#   }
-#   write.table(intersection.table, file="all_intersections.txt", sep="\t", row.names = FALSE)
-# }
-
-
-
 
 ### Intersection between nodes (genes) with high topological values and clusters of BRC1 network####
 
@@ -454,6 +393,75 @@ for (i in 1:length(top.parameters))
   intersection.table[,3] <- fdr.values
   write.table(intersection.table, 
               file=paste0("top_parameters_vs_clusters/intersections_", names(top.genes[i]), as.character(threshold),".txt"), 
+              sep="\t", row.names = FALSE, quote = FALSE)
+}
+
+
+# degree.intersections <- read.table(file="topvalues_clusters/intersections_Degree0.9.txt", header = TRUE, sep = "\t")
+# head(degree.intersections)
+# degree.intersections$fdr
+# degree.intersections$p.value
+# 
+# degree.intersections <- read.table(file="topvalues_clusters/intersections_Degree0.7.txt", header = TRUE, sep = "\t")
+# head(degree.intersections)
+# degree.intersections$fdr
+# degree.intersections$p.value
+
+
+
+
+
+##Loop to intersect the clusters of genes and output of network motifs (FFL)####
+
+#Get the output of the motifs
+ffl.data <- read.table(file = "../../data/motifs/feedforward_loops_with_multiple_output.tsv", 
+                       header = TRUE, sep = "\t")
+head(ffl.data)
+ffl.outputs <- ffl.data$output
+
+feedback.data <- read.table(file = "../../data/motifs/feedback_loops_with_multiple_output.tsv", 
+                       header = TRUE, sep = "\t")
+head(feedback.data)
+feedback.outputs <- feedback.data$output
+
+
+
+#Initialize matrix to store the results
+intersection.table <- matrix(ncol=6, nrow = length(feedback.outputs))
+colnames(intersection.table) <- c("master_regulator 1","master_regulator_2", "p-value", "fdr", "enrichment", "Intersection Genes") 
+head(intersection.table)
+i <- 1
+j <- 2    
+for (i in 1:length(brc1.clusters))
+{
+  for (j in 1:length(feedback.outputs))
+  {
+    
+    
+    current.cluster <- brc1.clusters[[i]]
+    current.output <- strsplit(x = as.character(feedback.outputs[[j]]), split = ",")[[1]]
+    
+    
+    print(paste0("TEST",j))
+    result <- intersect2sets(set1 = current.cluster, set2 = current.output, alias = alias, gene.descriptions = description)
+    p.value <- result[1][[1]]
+    enrichment <- result[2][[1]]
+    intersect.genes <- result[3][[1]]$intersection.genes
+    
+    
+    
+    intersection.table[j,1] <- as.character(feedback.data[j,1][1])
+    intersection.table[j,2] <- as.character(feedback.data[j,2][1])
+    intersection.table[j,3] <- p.value
+    intersection.table[j,5] <- enrichment
+    intersection.table[j,6] <- paste(intersect.genes, collapse= ",")
+    
+    
+  }
+  fdr.values <- p.adjust(intersection.table[,3], method = "BH")
+  intersection.table[,4] <- fdr.values
+  write.table(intersection.table, 
+              file=paste0("feedback_outputs_vs_clusters/feedback_outputs_vs_cluster_", i,".txt"), 
               sep="\t", row.names = FALSE, quote = FALSE)
 }
 
