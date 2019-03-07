@@ -264,6 +264,8 @@ ui <- fluidPage(
          tags$br(),
          tags$br(),
          tags$br(),
+         htmlOutput(outputId = "outputText"),
+         # dataTableOutput(outputId = "outputTable"),
          dataTableOutput(outputId = "output_table"),
          
          width = 9
@@ -634,16 +636,16 @@ server <- function(input, output) {
     {
       if(p.value < 0.01)
       {
-        text.intersection.result <- paste0("<b>The intersection between the genes with high ", input$topological_parameter,
-                                           " and genes that show a ", input$peak_top, " peak and ", input$trough_top, " trough ",
+        text.intersection.result <- paste0("<b>The intersection between the genes with high ", input$top_parameter,
+                                           " and genes of cluster ", input$cluster,
                                            " is significant with a p-value of ", p.value,
                                            " and an enrichment of ", round(x = enrichment,digits = 2),
                                            "<b>") 
         
       } else
       {
-        text.intersection.result <- paste0("<b>The intersection between the genes with high ", input$topological_parameter,
-                                           " and genes that show a ", input$peak_top, " peak and ", input$trough_top, " trough ",
+        text.intersection.result <- paste0("<b>The intersection between the genes with high ", input$top_parameter,
+                                           " and genes of cluster ", input$cluster,
                                            " is NOT significant with a p-value of ", round(x=p.value, digits = 2),
                                            " and an enrichment of ", round(x = enrichment,digits = 2),
                                            "<b> <br> <br>") 
@@ -654,9 +656,10 @@ server <- function(input, output) {
     
     output$outputText <- renderText(expr = text.intersection.result, quoted = FALSE)
     
-    output$outputTable <- renderDataTable({
-      create.output.table(input.gene.df=selected.genes.df,alias,tfs.names)
-    },escape=FALSE)
+    output$output_table <- renderDataTable({
+      #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
+      selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
+    },escape=FALSE) 
     
   })
   
