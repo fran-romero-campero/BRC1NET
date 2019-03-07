@@ -166,6 +166,8 @@ ui <- fluidPage(
         checkboxInput(inputId = "edges",label = "Visualize edges",value = FALSE),
         
         actionButton(inputId = "button_tfs",label = "Select Genes"),
+        tags$br(),
+        actionButton(inputId = "button_venn",label = "Draw Venn Diagram"),
         
         selectizeInput(inputId = "topological_parameter",
                        label = "Choose topological parameter",
@@ -264,8 +266,9 @@ ui <- fluidPage(
          tags$br(),
          tags$br(),
          tags$br(),
+         plotOutput(outputId = "vennPlot"),
          htmlOutput(outputId = "outputText"),
-         # dataTableOutput(outputId = "outputTable"),
+
          dataTableOutput(outputId = "output_table"),
          
          width = 9
@@ -275,7 +278,7 @@ ui <- fluidPage(
 
 # Define server logic required to represent the network
 server <- function(input, output) {
-
+  
   ## Default network representation 
   default.representation <- ggplot(network.data, aes(x.pos,y.pos)) + 
     theme(panel.background = element_blank(), 
@@ -537,6 +540,34 @@ server <- function(input, output) {
       #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
       selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
     },escape=FALSE)
+  })
+  
+  ## Visualization of Venn Diagram
+  observeEvent(input$button_venn, {
+  gene.selection <- network.data[, input$selected.tfs] == 1
+  venn.list <- rep( list(list()), length(input$selected.tfs) ) 
+  for (i in 1:length(input$selected.tfs)) #For loop to extract columns
+  {
+    venn.list[[i]] <- gene.names[gene.selection[,i]]
+  }
+  
+  #This is the message error for the venn diagram  
+  validate(need(length(input$selected.tfs) == 2,
+                  "Please select exactly two transcription factors"))
+    venn.plot <- venn.diagram(venn.list, filename = NULL, alpha=c(0.5,0.5), cex = 2, 
+                              cat.fontface=4, category.names=names(list.to.venn), 
+                              fill=c("red", "darkblue"),
+                              main="Common target genes", main.cex = 2)
+
+  
+  print("VENN")
+  
+  
+  
+  output$vennPlot <- renderPlot({
+    
+    grid.draw(venn.plot)},height = 350, width = 350)
+   
   })
   
   ##Visualization and intersection between topological parameters and gene clusters
