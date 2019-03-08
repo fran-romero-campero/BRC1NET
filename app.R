@@ -3,6 +3,7 @@ library(shiny)
 library(ggplot2)
 library(org.At.tair.db)
 library(SuperExactTest)
+library(VennDiagram)
 
 ##Auxiliary functions
 intersect2sets <- function(set1, set2, alias, gene.descriptions){
@@ -555,7 +556,7 @@ server <- function(input, output) {
   validate(need(length(input$selected.tfs) == 2,
                   "Please select exactly two transcription factors"))
     venn.plot <- venn.diagram(venn.list, filename = NULL, alpha=c(0.5,0.5), cex = 2, 
-                              cat.fontface=4, category.names=names(list.to.venn), 
+                              cat.fontface=4, category.names=input$selected.tfs,#names(venn.list), 
                               fill=c("red", "darkblue"),
                               main="Common target genes", main.cex = 2)
 
