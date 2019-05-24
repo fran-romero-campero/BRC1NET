@@ -5,7 +5,7 @@ library(org.At.tair.db)
 
 
 ## Load network
-network.data <- read.table(file="data/brc1_transcriptional_network.tsv",header = TRUE,as.is=TRUE,sep="\t",comment.char = "")
+network.data <- read.table(file="data/brc1_transcriptional_network.tsv",header=T,sep = "\t",as.is = T,quote = "",comment.char = "")
 #head(network.data)
 colnames(network.data)[56] <- "ATHB-53"
 colnames(network.data)[54] <- "DOF5-4"

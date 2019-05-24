@@ -158,7 +158,7 @@ head(brc1.network.data)
 nrow(brc1.network.data)
 gene.names <- brc1.network.data$names
 
-threshold <- 0.75 #Here you can change the threshold
+threshold <- 0.95 #Here you can change the threshold
 
 indegree.threshold <- quantile(brc1.network.data$indegree, prob=threshold)
 indegree.top <- gene.names[brc1.network.data$indegree > indegree.threshold]

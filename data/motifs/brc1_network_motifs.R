@@ -1,7 +1,7 @@
 ## This script performs an identification of network motifs in BRC1 downstream network
 
-# Authors: Pedro de los Reyes
-##         Francisco J. Romero-Campero
+# Authors: Francisco J. Romero-Campero
+#          Pedro de los Reyes
 # 
 # Contact: Francisco J. Romero-Campero - fran@us.es
 
@@ -193,7 +193,21 @@ occurrences.3[motifs.3.ind[5] + 1]
 ## Motif number 6
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[6]))
 occurrences.3[motifs.3.ind[6] + 1]
-##????
+
+maps.motif.6 <- graph.subisomorphic.lad(graph.isocreate(size=3, number=motifs.3.ind[6]), 
+                                        brc1.graph, all.maps=TRUE)[["maps"]]
+
+motif.6.instances <- matrix(NA, nrow=length(maps.motif.6),ncol=3)
+i <- 1
+length(maps.motif.6)
+for(i in 1:length(maps.motif.6))
+{
+  motif.6.instances[i,] <- names(maps.motif.6[[i]])
+}
+
+head(motif.6.instances)
+colnames(motif.6.instances) <- c("master_regulator_1","intermediary_regulator","master_regulator_2")
+write.table(x = motif.6.instances,file = "feedback_loop_with_extra_gene.tsv",quote = F,sep = "\t",row.names = F)
 
 ## Motif number 7
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[7]))
@@ -233,12 +247,6 @@ head(motif.7.instances)
 
 write.table(x = motif.7.instances,file = "feedback_loops_with_multiple_output.tsv",quote = F,sep = "\t",row.names = F)
 
-
-
-
-
-
-
 ## Motif number 8
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[8]))
 occurrences.3[motifs.3.ind[8] + 1]
@@ -248,4 +256,44 @@ occurrences.3[motifs.3.ind[8] + 1]
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[9]))
 occurrences.3[motifs.3.ind[9] + 1]
 
+maps.motif.9 <- graph.subisomorphic.lad(graph.isocreate(size=3, number=motifs.3.ind[9]), 
+                                        brc1.graph, all.maps=TRUE)[["maps"]]
+length(maps.motif.9)
 
+motif.9.instances <- matrix(NA, nrow=length(maps.motif.9),ncol = 3)
+for(i in 1:length(maps.motif.9))
+{
+  motif.9.instances[i, ] <- sort(names(maps.motif.9[[i]]))
+}
+
+motif.9.instances <- motif.9.instances[!duplicated(motif.9.instances),]
+nrow(motif.9.instances)
+write.table(x = motif.9.instances,file = "complete_feedback_loops.tsv",quote = F,sep = "\t",row.names = F)
+
+## Statistics for each motif
+brc1.occurrences <- read.table(file="occurency_subgraph_three_nodes_in_brc1.txt")[[1]]
+
+random.occurrences <- read.table(file="motifs_three_random_graph.txt")
+dim(random.occurrences)
+
+library(igraph)
+
+i <- 16
+brc1.occurrences[i]
+p.val <- sum(random.occurrences[,i] > brc1.occurrences[i])/1000
+p.val
+mean(random.occurrences[,i])
+sd(random.occurrences[,i])
+plot.igraph(graph.isocreate(size=3, number=(i - 1)))
+
+
+##i   brc1    p.val   random_mean   random_sd   name
+##6   205   < 1e-3    116.386   22.72513    feedback loop with a single regulator (variante del regulated feedback loop)
+##8   16510   < 1e-3    12857.19    940.3171    Feed Forward Loop *
+##9   134   < 1e-3    32.507    8.593474    Regulated Feedback loop *
+##10    23843   < 1e-3    12877.54    2197.759    Feedback loop with individual output (variante del feedback loop with multiple output)      
+##11    94    < 1e-3    32.923    12.11089    Double Feedbackloop (variante de feedback loop)
+##13    151   < 1e-3    65.318    13.81745    Feedback loop with long branch (variante de feedback loop)
+##14    7728    < 1e-3    3525.644    668.3618    Feedback loop with multiple output *
+##15    157   < 1e-3    35.796    12.63931    Double feedback loop with an extra branch (variante de feedback loop)
+##16    19    < 1e-3    3.217   2.458446    Triple Feedbackloop (variante de feedback loop)
