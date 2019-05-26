@@ -494,17 +494,38 @@ for (i in 1:length(tf.names))
     
     
 }
-  fdr.values <- p.adjust(intersection.table[,2], method = "BH")
-  intersection.table[,3] <- fdr.values
-  write.table(intersection.table, 
-              file="BRC1_targets_vs_all_TFs_targets.txt", 
-              sep="\t", row.names = FALSE, quote = FALSE)
+  
+fdr.values <- p.adjust(intersection.table[,2], method = "BH")
+intersection.table[,3] <- fdr.values
+write.table(intersection.table, 
+            file="BRC1_targets_vs_all_TFs_targets.txt", 
+            sep="\t", row.names = FALSE, quote = FALSE)
 
 
+######Venn diagrams to visualize intersection between target genes####
+
+library(VennDiagram)
+
+intersect.tfs <- intersect(brc1.targets, current.target.genes)
+list.to.venn <-list(brc1.targets, current.target.genes)
+names(list.to.venn) <- c("BRC1", "otro")
+
+grid.newpage()
+venn.plot <- venn.diagram(list.to.venn, filename = NULL, alpha=c(0.5,0.5), cex = 2, 
+                          cat.fontface=4, category.names=names(list.to.venn), 
+                          fill=c("red", "darkblue"),
+                          main="Common target genes")
+grid.draw(venn.plot)
 
 
+# draw.pairwise.venn(area1 = length(brc1.targets),
+#                    area2 = length(current.target.genes),
+#                    cross.area = length(intersect.tfs),
+#                    category = c("BRC1 targets", "Selected TF targets"),
+#                    fill=c("mediumseagreen","darkred"), 
+#                    cat.pos = c(0,190), cat.dist = rep(0.05, 1.3), cat.cex=1.6,
+#                    lwd=3,cex=1.4, fontfamily="arial",
+#                    cat.fontfamily="arial",fontface="bold",
+#                    cat.fontface="bold")
 
-
-
-
-
+  
