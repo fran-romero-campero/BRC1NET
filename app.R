@@ -5,11 +5,14 @@ library(org.At.tair.db)
 library(SuperExactTest)
 library(VennDiagram)
 
+## To test the app
+#input <- list(selected.tfs = c("BRC1", "ABI5"), selected_cluster = "Cluster8")
+
 ##Auxiliary functions
 intersect2sets <- function(set1, set2, alias, gene.descriptions){
   intersection.data <- list()
   sets <- list(set1, set2)
-  results <- supertest(x = sets, n = 5778)
+  results <- supertest(x = sets, n = 931)
   results.table <- summary(results)
   p.value <- tail(results.table$P.value, n=1) #Get the last p-value
   enrichment <- (results.table$Table)[["FE"]][nrow(results.table$Table)]
@@ -24,10 +27,7 @@ intersect2sets <- function(set1, set2, alias, gene.descriptions){
   gene.table[,1] <- intersection.genes.agi
   gene.table[,2] <- intersection.genes.primary.symbol
   #  gene.table[,3] <- description
-  
-  
-  
-  
+
   intersection.genes.description <- gene.descriptions[intersection.genes]
   names(intersection.genes.description) <- NULL
   
@@ -46,7 +46,7 @@ gene.names <- network.data$names
 rownames(network.data) <- gene.names
 
 ## Extract gene descriptions
-gene.description <- network.data$T.annotation
+gene.description <- network.data$S.annotation
 names(gene.description) <- network.data$names
 
 #head(network.data)
@@ -81,7 +81,6 @@ names(gene.links) <- genes
 ## Load all and circadian genes
 my.key <- keys(org.At.tair.db, keytype="ENTREZID")
 my.col <- c("SYMBOL", "TAIR")
-columns(org.At.tair.db)
 alias2symbol.table <- select(org.At.tair.db, keys=my.key, columns=my.col, keytype="ENTREZID")
 alias2symbol.table <- subset(alias2symbol.table, genes %in% TAIR)
 alias <- alias2symbol.table$SYMBOL
@@ -155,7 +154,7 @@ ui <- fluidPage(
    sidebarLayout(
       sidebarPanel(
         
-        tags$h3(tags$b("Gene Target Selection:")),
+        tags$h3(tags$b("Analysis of significance of common targets and enrichment in specific clusters:")),
         
         checkboxGroupInput(inputId = "selected.tfs",
                            label = "Select at most Two Transcription Factors:",
@@ -166,80 +165,80 @@ ui <- fluidPage(
                     choices = c("None", paste0("Cluster",1:9)), selected = "None",
                     multiple = FALSE, selectize = TRUE), 
 
-        checkboxInput(inputId = "edges",label = "Visualize edges",value = FALSE),
-        checkboxInput(inputId = "draw_venn_diagram",label = "Draw Venn Diagram",value = FALSE),
-        checkboxInput(inputId = "overlap_test",label = "Perform Significance Test for Overlap",value = FALSE),
-        actionButton(inputId = "button_tfs",label = "Select Genes"),
+        # checkboxInput(inputId = "edges",label = "Visualize edges",value = FALSE),
+        # checkboxInput(inputId = "draw_venn_diagram",label = "Draw Venn Diagram",value = FALSE),
+        # checkboxInput(inputId = "overlap_test",label = "Perform Significance Test for Overlap",value = FALSE),
+        actionButton(inputId = "button_tfs",label = "Perform Analysis"),
         # tags$br(),
         # actionButton(inputId = "button_venn",label = "Draw Venn Diagram"),
         
-        selectizeInput(inputId = "topological_parameter",
-                       label = "Choose topological parameter",
-                       choices = c("In degree",
-                                   "Transitivity",
-                                   "Closeness",
-                                   "Betweeness",
-                                   "Eccentricity")),
-        
-        conditionalPanel(condition = "input.topological_parameter == 'In degree'",
-                         sliderInput(inputId = "indegree_range",
-                                     label="Choose an in degree range:",
-                                     min=min(network.data$indegree),
-                                     max=max(network.data$indegree),
-                                     value=c(min(network.data$indegree),max(network.data$indegree))),
-                         actionButton(inputId = "button_indegree",label = "Select Genes")
-                         ),
-
-        conditionalPanel(condition = "input.topological_parameter == 'Transitivity'",
-                         sliderInput(inputId = "transitivity_range",
-                                     label="Choose a transitivity range:",
-                                     min=min(network.data$transitivity),
-                                     max=max(network.data$transitivity),
-                                     value=c(min(network.data$transitivity),max(network.data$transitivity))),
-                         actionButton(inputId = "button_transitivity",label = "Select Genes")
-        ),
-
-        conditionalPanel(condition = "input.topological_parameter == 'Closeness'",
-                         sliderInput(inputId = "closeness_range",
-                                     label="Choose a closeness range:",
-                                     min=min(network.data$closeness),
-                                     max=max(network.data$closeness),
-                                     value=c(min(network.data$closeness),max(network.data$closeness))),
-                         actionButton(inputId = "button_closeness",label = "Select Genes")
-        ),
-        
-        conditionalPanel(condition = "input.topological_parameter == 'Betweeness'",
-                         sliderInput(inputId = "betweeness_range",
-                                     label="Choose a betweeness range:",
-                                     min=min(network.data$betweenness),
-                                     max=max(network.data$betweenness),
-                                     value=c(min(network.data$betweeness),max(network.data$betweeness))),
-                         actionButton(inputId = "button_betweeness",label = "Select Genes")
-        ),
-        
-
-        conditionalPanel(condition = "input.topological_parameter == 'Eccentricity'",
-                         sliderInput(inputId = "eccentricity_range",
-                                     label="Choose an eccentricity range:",
-                                     min=min(network.data$eccentricity),
-                                     max=max(network.data$eccentricity),
-                                     value=c(min(network.data$eccentricity),max(network.data$eccentricity))),
-                         actionButton(inputId = "button_eccentricity",
-                                      label = "Select Genes")
-        ),
-        
-        tags$h3(tags$b("Intersections")),
-        selectInput(inputId = "cluster", label="Cluster",
-                    choices = 1:9, selected = NULL,
-                    multiple = FALSE, selectize = TRUE), 
-        selectInput(inputId = "top_parameter", label = "Topological parameter", 
-                    choices = c("Degree","Betweeness", "Closeness", "Eccentricity","Transitivity"), selected = NULL,
-                    multiple = FALSE, selectize = TRUE),
-        selectInput(inputId = "threshold", label = "Parameter threshold",
-                    choices = c(0.75,0.90,0.95), selected = NULL, multiple = FALSE, selectize = TRUE),
-        
-        
-        actionButton(inputId = "top_intersect", label = "Test"),
+        # selectizeInput(inputId = "topological_parameter",
+        #                label = "Choose topological parameter",
+        #                choices = c("In degree",
+        #                            "Transitivity",
+        #                            "Closeness",
+        #                            "Betweeness",
+        #                            "Eccentricity")),
+        # 
+        # conditionalPanel(condition = "input.topological_parameter == 'In degree'",
+        #                  sliderInput(inputId = "indegree_range",
+        #                              label="Choose an in degree range:",
+        #                              min=min(network.data$indegree),
+        #                              max=max(network.data$indegree),
+        #                              value=c(min(network.data$indegree),max(network.data$indegree))),
+        #                  actionButton(inputId = "button_indegree",label = "Select Genes")
+        #                  ),
+        # 
+        # conditionalPanel(condition = "input.topological_parameter == 'Transitivity'",
+        #                  sliderInput(inputId = "transitivity_range",
+        #                              label="Choose a transitivity range:",
+        #                              min=min(network.data$transitivity),
+        #                              max=max(network.data$transitivity),
+        #                              value=c(min(network.data$transitivity),max(network.data$transitivity))),
+        #                  actionButton(inputId = "button_transitivity",label = "Select Genes")
+        # ),
+        # 
+        # conditionalPanel(condition = "input.topological_parameter == 'Closeness'",
+        #                  sliderInput(inputId = "closeness_range",
+        #                              label="Choose a closeness range:",
+        #                              min=min(network.data$closeness),
+        #                              max=max(network.data$closeness),
+        #                              value=c(min(network.data$closeness),max(network.data$closeness))),
+        #                  actionButton(inputId = "button_closeness",label = "Select Genes")
+        # ),
+        # 
+        # conditionalPanel(condition = "input.topological_parameter == 'Betweeness'",
+        #                  sliderInput(inputId = "betweeness_range",
+        #                              label="Choose a betweeness range:",
+        #                              min=min(network.data$betweenness),
+        #                              max=max(network.data$betweenness),
+        #                              value=c(min(network.data$betweeness),max(network.data$betweeness))),
+        #                  actionButton(inputId = "button_betweeness",label = "Select Genes")
+        # ),
+        # 
+        # 
+        # conditionalPanel(condition = "input.topological_parameter == 'Eccentricity'",
+        #                  sliderInput(inputId = "eccentricity_range",
+        #                              label="Choose an eccentricity range:",
+        #                              min=min(network.data$eccentricity),
+        #                              max=max(network.data$eccentricity),
+        #                              value=c(min(network.data$eccentricity),max(network.data$eccentricity))),
+        #                  actionButton(inputId = "button_eccentricity",
+        #                               label = "Select Genes")
+        # ),
+        # 
+        # tags$h3(tags$b("Intersections")),
+        # selectInput(inputId = "cluster", label="Cluster",
+        #             choices = 1:9, selected = NULL,
+        #             multiple = FALSE, selectize = TRUE), 
+        # selectInput(inputId = "top_parameter", label = "Topological parameter", 
+        #             choices = c("Degree","Betweeness", "Closeness", "Eccentricity","Transitivity"), selected = NULL,
+        #             multiple = FALSE, selectize = TRUE),
+        # selectInput(inputId = "threshold", label = "Parameter threshold",
+        #             choices = c(0.75,0.90,0.95), selected = NULL, multiple = FALSE, selectize = TRUE),
+        # 
+        # 
+        # actionButton(inputId = "top_intersect", label = "Test"),
 
 #         sliderInput(inputId = "degree_range", label = h3("Degree Range"), min = 0, 
 #                     max = 11, value = c(2, 4)),
@@ -260,6 +259,7 @@ ui <- fluidPage(
          htmlOutput(outputId = "outputText"),
 
          plotOutput(outputId = "vennPlot"),
+         tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(),
          
          dataTableOutput(outputId = "output_table"),
          
@@ -290,33 +290,11 @@ server <- function(input, output) {
     default.representation
   },height = 700)
   
-  
-#  observeEvent(input$plot_click, {
-    # output$networkPlot <- renderPlot({
-    #   print("click")
-    #   default.representation +
-    #     annotate("text",
-    #              x = input$plot_hover$x + 1,
-    #              y = input$plot_hover$y + 1, 
-    #              label="lala",size=10)
-    # },height = 700)
-  
-  #})  
 
   ## Visualization of selected genes according to their degree
   observeEvent(input$button_tfs, {
     print("aquí llego 4")
 
-    # validate(
-    #   need(length(input$selected.tfs) < 3, 
-    #        paste0("Please select at most TWO transcription factors. You have selected ", 
-    #               length(input$selected.tfs)))
-    # )
-    # 
-    # if(length(input$selected.tfs) > 2)
-    # {
-    #   
-    # } else 
     if (length(input$selected.tfs) == 1)
     {
       gene.selection <- network.data[,input$selected.tfs] == 1
@@ -349,16 +327,8 @@ server <- function(input, output) {
     
     selected.tfs.df <- subset(network.data, names %in% tf.ids[input$selected.tfs])
     
-    if(input$edges)
+    if(TRUE)#input$edges)
     {
-      network.representation <- ggplot(network.data, aes(x.pos,y.pos)) +
-        theme(panel.background = element_blank(),
-              panel.grid.major = element_blank(),
-              panel.grid.minor = element_blank(),
-              axis.title = element_blank(),
-              axis.text = element_blank(),
-              axis.ticks.y = element_blank())
-      
       network.representation <- ggplot(network.data, aes(x.pos,y.pos)) + 
           theme(panel.background = element_blank(), 
                 panel.grid.major = element_blank(), 
@@ -383,6 +353,27 @@ server <- function(input, output) {
                      color="grey", arrow=arrow(type="closed",length=unit(0.1, "cm")))
       }
       
+      selected.tf.ids <- tf.ids[input$selected.tfs]
+
+      for(i in 1:length(input$selected.tfs))
+      {
+        for(j in 1:length(input$selected.tfs))
+        {
+          if(network.data[selected.tf.ids[j],input$selected.tfs[i]] == 1)
+          {
+            network.representation <- network.representation +
+              annotate(geom = "segment", 
+                       x = network.data[tf.ids[input$selected.tfs[i]],"x.pos"],
+                       y = network.data[tf.ids[input$selected.tfs[i]],"y.pos"],
+                       xend = network.data[selected.tf.ids[j],"x.pos"],
+                       yend = network.data[selected.tf.ids[j],"y.pos"],
+                       color="grey", arrow=arrow(type="closed",length=unit(0.1, "cm"))
+              )
+          }
+        }
+      }
+      
+      
       network.representation <- network.representation +
         geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21) +
         geom_point(data = selected.tfs.df, size=8, fill=selected.tfs.df$color,colour="black",pch=21) 
@@ -406,7 +397,7 @@ server <- function(input, output) {
       },height = 700)
     }
 
-    if(input$draw_venn_diagram)
+    if(TRUE)#input$draw_venn_diagram)
     {
       gene.selection <- network.data[, input$selected.tfs] == 1
 
@@ -428,7 +419,7 @@ server <- function(input, output) {
         venn.plot <- venn.diagram(venn.list, filename = NULL, alpha=c(0.5,0.5), cex = 2, 
                                   cat.fontface=4, category.names=input$selected.tfs, 
                                   fill=c("red", "darkblue"),
-                                  main="Common target genes", main.cex = 2)
+                                  main="", main.cex = 2)
       } else
       {
         venn.list[[length(input$selected.tfs)+1]] <- cluster
@@ -436,20 +427,15 @@ server <- function(input, output) {
                                   cat.fontface=4, category.names=c(input$selected.tfs,
                                                                    input$selected_cluster),
                                   fill=c("red", "darkblue","grey"),
-                                  main="Common target genes", main.cex = 2)
+                                  main="", main.cex = 2)
       }
-      
 
-      print("VENN")
-      
       output$vennPlot <- renderPlot({
-        
-        grid.draw(venn.plot)},height = 500, width = 500)
-      
-      
+        grid.draw(venn.plot)},height = 500, width = 500
+      )
     }
     
-    if(input$overlap_test)
+    if(TRUE)#(input$overlap_test)
     {
       if(input$selected_cluster == "None")
       {
@@ -475,10 +461,38 @@ server <- function(input, output) {
       p.value <- tail(results.table$P.value, n=1) #Get the last p-value
       enrichment <- (results.table$Table)[["FE"]][nrow(results.table$Table)]
       
+      text.tfs <- paste(input$selected.tfs, collapse = " and ")
       
-      print(p.value)
-      print(p.value*choose(37,2)*9)
-      print(enrichment)
+      if(input$selected_cluster == "None")
+      {
+        if(p.value < 0.05)
+        {
+          text.significance <- paste(c("Our analysis indicates that the transcription factors", text.tfs,
+                                       "significantly co-regulate a set of common targets according to a p-value of", p.value),collapse=" ")
+        } else
+        {
+          text.significance <- paste(c("Our analysis indicates that the transcription factors", text.tfs,
+                                       "targets do NOT overlap significantly according to a p-value of", p.value),collapse=" ")
+        }
+      } else
+      {
+        if(p.value < 0.05)
+        {
+          text.significance <- paste(c("Our analysis indicates that the transcription factors", text.tfs,
+                                       "significantly co-regulate a set of common targets that are enriched in ",
+                                       input$selected_cluster, "according to a p-value of", p.value, "and an enrichment of", round(x=enrichment, digits=2)),collapse=" ")
+        } else
+        {
+          text.significance <- paste(c("Our analysis indicates that the overlap of the transcription factors", text.tfs,
+                                       "targets with ", input$selected_cluster, "is NOT significant according to a p-value of", 
+                                       round(x=p.value,digits=2)),collapse=" ")
+        }
+      }
+      
+      intro.text <- ". The Venn diagram below illustrates this result. The gene set corresponding to the overlap can be inspected and downloaded from the table below."
+      
+      output$outputText <- renderText(expr = paste0(text.significance,intro.text), quoted = FALSE)
+      
     }
     
     selected.genes.df$names <- gene.links[selected.genes.df$names]
@@ -652,7 +666,7 @@ server <- function(input, output) {
     venn.plot <- venn.diagram(venn.list, filename = NULL, alpha=c(0.5,0.5), cex = 2, 
                               cat.fontface=4, category.names=input$selected.tfs,#names(venn.list), 
                               fill=c("red", "darkblue"),
-                              main="Common target genes", main.cex = 2)
+                              main="", main.cex = 2)
 
   
   print("VENN")
