@@ -27,7 +27,7 @@ intersect2sets <- function(set1, set2, alias, gene.descriptions){
   gene.table[,1] <- intersection.genes.agi
   gene.table[,2] <- intersection.genes.primary.symbol
   #  gene.table[,3] <- description
-
+  
   intersection.genes.description <- gene.descriptions[intersection.genes]
   names(intersection.genes.description) <- NULL
   
@@ -70,10 +70,10 @@ for(i in 1:length(genes))
 {
   tair.link <- paste0("https://www.arabidopsis.org/servlets/TairObject?type=locus&name=",genes[i])
   gene.links[i] <- paste(c("<a href=\"",
-                       tair.link,
-                       "\" target=\"_blank\">",
-                       genes[i], "</a>"),
-                     collapse="")
+                           tair.link,
+                           "\" target=\"_blank\">",
+                           genes[i], "</a>"),
+                         collapse="")
 }
 
 names(gene.links) <- genes
@@ -146,129 +146,129 @@ for (i in 1:(nrow(network.data)-1))
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-   
-   # Application title
+  
+  # Application title
   titlePanel(tags$b("A Transcriptional Network Downstream of BRC1")),
-   
-   # Sidebar with a slider input for number of bins 
-   sidebarLayout(
-      sidebarPanel(
-        
-        tags$h3(tags$b("Analysis of significance of common targets and enrichment in specific clusters:")),
-        
-        checkboxGroupInput(inputId = "selected.tfs",
-                           label = "Select at most Two Transcription Factors:",
-                           choices = sort(tfs.data$name,decreasing=F),
-                           inline = TRUE,width = "100%"),
-        
-        selectInput(inputId = "selected_cluster", label="Select a Gene Cluster",
-                    choices = c("None", paste0("Cluster",1:9)), selected = "None",
-                    multiple = FALSE, selectize = TRUE), 
-
-        # checkboxInput(inputId = "edges",label = "Visualize edges",value = FALSE),
-        # checkboxInput(inputId = "draw_venn_diagram",label = "Draw Venn Diagram",value = FALSE),
-        # checkboxInput(inputId = "overlap_test",label = "Perform Significance Test for Overlap",value = FALSE),
-        actionButton(inputId = "button_tfs",label = "Perform Analysis"),
-        # tags$br(),
-        # actionButton(inputId = "button_venn",label = "Draw Venn Diagram"),
-        
-        # selectizeInput(inputId = "topological_parameter",
-        #                label = "Choose topological parameter",
-        #                choices = c("In degree",
-        #                            "Transitivity",
-        #                            "Closeness",
-        #                            "Betweeness",
-        #                            "Eccentricity")),
-        # 
-        # conditionalPanel(condition = "input.topological_parameter == 'In degree'",
-        #                  sliderInput(inputId = "indegree_range",
-        #                              label="Choose an in degree range:",
-        #                              min=min(network.data$indegree),
-        #                              max=max(network.data$indegree),
-        #                              value=c(min(network.data$indegree),max(network.data$indegree))),
-        #                  actionButton(inputId = "button_indegree",label = "Select Genes")
-        #                  ),
-        # 
-        # conditionalPanel(condition = "input.topological_parameter == 'Transitivity'",
-        #                  sliderInput(inputId = "transitivity_range",
-        #                              label="Choose a transitivity range:",
-        #                              min=min(network.data$transitivity),
-        #                              max=max(network.data$transitivity),
-        #                              value=c(min(network.data$transitivity),max(network.data$transitivity))),
-        #                  actionButton(inputId = "button_transitivity",label = "Select Genes")
-        # ),
-        # 
-        # conditionalPanel(condition = "input.topological_parameter == 'Closeness'",
-        #                  sliderInput(inputId = "closeness_range",
-        #                              label="Choose a closeness range:",
-        #                              min=min(network.data$closeness),
-        #                              max=max(network.data$closeness),
-        #                              value=c(min(network.data$closeness),max(network.data$closeness))),
-        #                  actionButton(inputId = "button_closeness",label = "Select Genes")
-        # ),
-        # 
-        # conditionalPanel(condition = "input.topological_parameter == 'Betweeness'",
-        #                  sliderInput(inputId = "betweeness_range",
-        #                              label="Choose a betweeness range:",
-        #                              min=min(network.data$betweenness),
-        #                              max=max(network.data$betweenness),
-        #                              value=c(min(network.data$betweeness),max(network.data$betweeness))),
-        #                  actionButton(inputId = "button_betweeness",label = "Select Genes")
-        # ),
-        # 
-        # 
-        # conditionalPanel(condition = "input.topological_parameter == 'Eccentricity'",
-        #                  sliderInput(inputId = "eccentricity_range",
-        #                              label="Choose an eccentricity range:",
-        #                              min=min(network.data$eccentricity),
-        #                              max=max(network.data$eccentricity),
-        #                              value=c(min(network.data$eccentricity),max(network.data$eccentricity))),
-        #                  actionButton(inputId = "button_eccentricity",
-        #                               label = "Select Genes")
-        # ),
-        # 
-        # tags$h3(tags$b("Intersections")),
-        # selectInput(inputId = "cluster", label="Cluster",
-        #             choices = 1:9, selected = NULL,
-        #             multiple = FALSE, selectize = TRUE), 
-        # selectInput(inputId = "top_parameter", label = "Topological parameter", 
-        #             choices = c("Degree","Betweeness", "Closeness", "Eccentricity","Transitivity"), selected = NULL,
-        #             multiple = FALSE, selectize = TRUE),
-        # selectInput(inputId = "threshold", label = "Parameter threshold",
-        #             choices = c(0.75,0.90,0.95), selected = NULL, multiple = FALSE, selectize = TRUE),
-        # 
-        # 
-        # actionButton(inputId = "top_intersect", label = "Test"),
-
-#         sliderInput(inputId = "degree_range", label = h3("Degree Range"), min = 0, 
-#                     max = 11, value = c(2, 4)),
-#         actionButton(inputId = "button_degree",label = "Select Genes"),
-
-
-        width = 3 
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+      
+#      tags$h5(tags$b("Analysis of significance of common targets and enrichment in specific clusters:")),
+      
+      checkboxGroupInput(inputId = "selected.tfs",
+                         label = "Select at most Two Transcription Factors:",
+                         choices = sort(tfs.data$name,decreasing=F),
+                         inline = TRUE,width = "100%"),
+      
+      selectInput(inputId = "selected_cluster", label="Select a Gene Cluster",
+                  choices = c("None", paste0("Cluster",1:9)), selected = "None",
+                  multiple = FALSE, selectize = TRUE), 
+      
+      # checkboxInput(inputId = "edges",label = "Visualize edges",value = FALSE),
+      # checkboxInput(inputId = "draw_venn_diagram",label = "Draw Venn Diagram",value = FALSE),
+      # checkboxInput(inputId = "overlap_test",label = "Perform Significance Test for Overlap",value = FALSE),
+      actionButton(inputId = "button_tfs",label = "Perform Analysis"),
+      # tags$br(),
+      # actionButton(inputId = "button_venn",label = "Draw Venn Diagram"),
+      
+      # selectizeInput(inputId = "topological_parameter",
+      #                label = "Choose topological parameter",
+      #                choices = c("In degree",
+      #                            "Transitivity",
+      #                            "Closeness",
+      #                            "Betweeness",
+      #                            "Eccentricity")),
+      # 
+      # conditionalPanel(condition = "input.topological_parameter == 'In degree'",
+      #                  sliderInput(inputId = "indegree_range",
+      #                              label="Choose an in degree range:",
+      #                              min=min(network.data$indegree),
+      #                              max=max(network.data$indegree),
+      #                              value=c(min(network.data$indegree),max(network.data$indegree))),
+      #                  actionButton(inputId = "button_indegree",label = "Select Genes")
+      #                  ),
+      # 
+      # conditionalPanel(condition = "input.topological_parameter == 'Transitivity'",
+      #                  sliderInput(inputId = "transitivity_range",
+      #                              label="Choose a transitivity range:",
+      #                              min=min(network.data$transitivity),
+      #                              max=max(network.data$transitivity),
+      #                              value=c(min(network.data$transitivity),max(network.data$transitivity))),
+      #                  actionButton(inputId = "button_transitivity",label = "Select Genes")
+      # ),
+      # 
+      # conditionalPanel(condition = "input.topological_parameter == 'Closeness'",
+      #                  sliderInput(inputId = "closeness_range",
+      #                              label="Choose a closeness range:",
+      #                              min=min(network.data$closeness),
+      #                              max=max(network.data$closeness),
+      #                              value=c(min(network.data$closeness),max(network.data$closeness))),
+      #                  actionButton(inputId = "button_closeness",label = "Select Genes")
+      # ),
+      # 
+      # conditionalPanel(condition = "input.topological_parameter == 'Betweeness'",
+      #                  sliderInput(inputId = "betweeness_range",
+      #                              label="Choose a betweeness range:",
+      #                              min=min(network.data$betweenness),
+      #                              max=max(network.data$betweenness),
+      #                              value=c(min(network.data$betweeness),max(network.data$betweeness))),
+      #                  actionButton(inputId = "button_betweeness",label = "Select Genes")
+      # ),
+      # 
+      # 
+      # conditionalPanel(condition = "input.topological_parameter == 'Eccentricity'",
+      #                  sliderInput(inputId = "eccentricity_range",
+      #                              label="Choose an eccentricity range:",
+      #                              min=min(network.data$eccentricity),
+      #                              max=max(network.data$eccentricity),
+      #                              value=c(min(network.data$eccentricity),max(network.data$eccentricity))),
+      #                  actionButton(inputId = "button_eccentricity",
+      #                               label = "Select Genes")
+      # ),
+      # 
+      # tags$h3(tags$b("Intersections")),
+      # selectInput(inputId = "cluster", label="Cluster",
+      #             choices = 1:9, selected = NULL,
+      #             multiple = FALSE, selectize = TRUE), 
+      # selectInput(inputId = "top_parameter", label = "Topological parameter", 
+      #             choices = c("Degree","Betweeness", "Closeness", "Eccentricity","Transitivity"), selected = NULL,
+      #             multiple = FALSE, selectize = TRUE),
+      # selectInput(inputId = "threshold", label = "Parameter threshold",
+      #             choices = c(0.75,0.90,0.95), selected = NULL, multiple = FALSE, selectize = TRUE),
+      # 
+      # 
+      # actionButton(inputId = "top_intersect", label = "Test"),
+      
+      #         sliderInput(inputId = "degree_range", label = h3("Degree Range"), min = 0, 
+      #                     max = 11, value = c(2, 4)),
+      #         actionButton(inputId = "button_degree",label = "Select Genes"),
+      
+      
+      width = 3 
+    ),
+    
+    # Show a plot of the network and table with selected genes info
+    mainPanel(
+      column(width = 12, align = "center",
+             plotOutput("networkPlot",hover="plot_hover"),#click="plot_click"),
+             tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(),
+             tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(),
+             tags$br(), tags$br(),
+             
+             htmlOutput(outputId = "outputText"),
+             
+             plotOutput(outputId = "vennPlot"),
+             tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(),
+             
+             dataTableOutput(outputId = "output_table"),
+             
+             uiOutput(outputId = "download_ui_for_table")
       ),
       
-      # Show a plot of the network and table with selected genes info
-      mainPanel(
-        column(width = 12, align = "center",
-         plotOutput("networkPlot",hover="plot_hover"),#click="plot_click"),
-         tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(),
-         tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(),
-         tags$br(), tags$br(),
-
-         htmlOutput(outputId = "outputText"),
-
-         plotOutput(outputId = "vennPlot"),
-         tags$br(), tags$br(), tags$br(), tags$br(), tags$br(), tags$br(),
-         
-         dataTableOutput(outputId = "output_table"),
-         
-         uiOutput(outputId = "download_ui_for_table")
-        ),
-         
-         width = 9
-      )
-   )
+      width = 9
+    )
+  )
 )
 
 # Define server logic required to represent the network
@@ -277,24 +277,24 @@ server <- function(input, output) {
   ## Default network representation 
   default.representation <- ggplot(network.data, aes(x.pos,y.pos)) + 
     theme(panel.background = element_blank(), 
-    panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank(),
-    axis.title = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks.y = element_blank()) + 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.title = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks.y = element_blank()) + 
     geom_point(color=network.data$color,size=1)
- 
+  
   ## Initial/default visualization of BRC1 Network
   output$networkPlot <- renderPlot({
     print("default")
     default.representation
   },height = 700)
   
-
+  
   ## Visualization of selected genes according to their degree
   observeEvent(input$button_tfs, {
     print("aquí llego 4")
-
+    
     if (length(input$selected.tfs) == 1)
     {
       gene.selection <- network.data[,input$selected.tfs] == 1
@@ -307,7 +307,7 @@ server <- function(input, output) {
     {
       gene.selection <- NULL
     }
-
+    
     ## Filtering when a gene cluster is selected
     if(input$selected_cluster == "None")
     {
@@ -315,10 +315,10 @@ server <- function(input, output) {
     } else
     {
       cluster <- unlist(brc1.clusters[[as.numeric(substr(x = input$selected_cluster,
-                                                 start = 8,
-                                                 stop=nchar(input$selected_cluster)))]])
+                                                         start = 8,
+                                                         stop=nchar(input$selected_cluster)))]])
     }
-
+    
     selected.genes <- intersect(gene.names[gene.selection],cluster)
     
     #selected.genes.df <- network.data[gene.selection,]
@@ -330,31 +330,31 @@ server <- function(input, output) {
     if(TRUE)#input$edges)
     {
       network.representation <- ggplot(network.data, aes(x.pos,y.pos)) + 
-          theme(panel.background = element_blank(), 
-                panel.grid.major = element_blank(), 
-                panel.grid.minor = element_blank(),
-                axis.title = element_blank(),
-                axis.text = element_blank(),
-                axis.ticks.y = element_blank()) + 
-          geom_point(color=network.data$color,size=1) +
-          geom_point(data = selected.tfs.df, size=8, fill=selected.tfs.df$color,colour="black",pch=21) +
-          geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21) 
+        theme(panel.background = element_blank(), 
+              panel.grid.major = element_blank(), 
+              panel.grid.minor = element_blank(),
+              axis.title = element_blank(),
+              axis.text = element_blank(),
+              axis.ticks.y = element_blank()) + 
+        geom_point(color=network.data$color,size=1) +
+        geom_point(data = selected.tfs.df, size=8, fill=selected.tfs.df$color,colour="black",pch=21) +
+        geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21) 
       
       for(i in 1:length(input$selected.tfs))
       {
         tf.xpos <- subset(network.data, names == tf.ids[input$selected.tfs[i]])[["x.pos"]]
         tf.ypos <- subset(network.data, names == tf.ids[input$selected.tfs[i]])[["y.pos"]]
         network.representation <- network.representation +
-            annotate("segment",
-                     x=rep(tf.xpos,nrow(selected.genes.df)),
-                     y=rep(tf.ypos,nrow(selected.genes.df)),
-                     xend=selected.genes.df$x.pos,
-                     yend=selected.genes.df$y.pos, 
-                     color="grey", arrow=arrow(type="closed",length=unit(0.1, "cm")))
+          annotate("segment",
+                   x=rep(tf.xpos,nrow(selected.genes.df)),
+                   y=rep(tf.ypos,nrow(selected.genes.df)),
+                   xend=selected.genes.df$x.pos,
+                   yend=selected.genes.df$y.pos, 
+                   color="grey", arrow=arrow(type="closed",length=unit(0.1, "cm")))
       }
       
       selected.tf.ids <- tf.ids[input$selected.tfs]
-
+      
       for(i in 1:length(input$selected.tfs))
       {
         for(j in 1:length(input$selected.tfs))
@@ -377,7 +377,7 @@ server <- function(input, output) {
       network.representation <- network.representation +
         geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21) +
         geom_point(data = selected.tfs.df, size=8, fill=selected.tfs.df$color,colour="black",pch=21) 
-
+      
       output$networkPlot <- renderPlot({
         network.representation
       },height = 700)
@@ -396,11 +396,11 @@ server <- function(input, output) {
           geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21) 
       },height = 700)
     }
-
+    
     if(TRUE)#input$draw_venn_diagram)
     {
       gene.selection <- network.data[, input$selected.tfs] == 1
-
+      
       if(input$selected_cluster == "None")
       {
         venn.list <- rep( list(list()), length(input$selected.tfs) ) 
@@ -429,7 +429,7 @@ server <- function(input, output) {
                                   fill=c("red", "darkblue","grey"),
                                   main="", main.cex = 2)
       }
-
+      
       output$vennPlot <- renderPlot({
         grid.draw(venn.plot)},height = 500, width = 500
       )
@@ -444,7 +444,7 @@ server <- function(input, output) {
       {
         sets <- vector(mode = "list",length = length(input$selected.tfs) + 1)
       }
-
+      
       for(i in 1:length(input$selected.tfs))
       {
         current.tf <- input$selected.tfs[i]
@@ -495,25 +495,45 @@ server <- function(input, output) {
       
     }
     
+    downloadable.table <- selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
     selected.genes.df$names <- gene.links[selected.genes.df$names]
     
     output$output_table <- renderDataTable({
-    #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
+      #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
       selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
-    },escape=FALSE)  
+    },escape=FALSE)
+    
+    
+    output$download_ui_for_table <- renderUI(
+      tagList(downloadButton(outputId= "downloadData", "Download Selected Genes"),
+              tags$br(),tags$br(),tags$br(),tags$br(),tags$br(),tags$br())
+    )
+    
+    output$downloadData<- downloadHandler(
+      filename= function() {
+        paste0(paste(c(input$selected.tfs,input$selected_cluster),collapse="_"),".tsv")
+      },
+      content= function(file) {
+        write.table(downloadable.table, 
+                    file=file, 
+                    sep = "\t", 
+                    quote = FALSE,
+                    row.names = FALSE)
+      })
+
   })
   
-
+  
   
   
   ## Visualization of selected genes according to their degree
   observeEvent(input$button_indegree, {
     print("aquí llego 5")
-
+    
     degree.values <- input$indegree_range
     selected.genes.df <- subset(network.data, indegree >= degree.values[1] & indegree <= degree.values[2])
     selected.nodes.colors <- selected.genes.df$color
-
+    
     output$networkPlot <- renderPlot({
       ggplot(network.data, aes(x.pos,y.pos)) +
         theme(panel.background = element_blank(),
@@ -525,10 +545,10 @@ server <- function(input, output) {
         geom_point(color=network.data$color,size=1) +
         geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
     },height = 700)
-
-
+    
+    
     selected.genes.df$names <- gene.links[selected.genes.df$names]
-
+    
     output$output_table <- renderDataTable({
       #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
       selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
@@ -621,7 +641,7 @@ server <- function(input, output) {
       selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
     },escape=FALSE)
   })
-
+  
   
   ## Visualization of selected genes according to their betweeness
   observeEvent(input$button_eccentricity, {
@@ -642,41 +662,42 @@ server <- function(input, output) {
         geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
     },height = 700)
     
-    
     selected.genes.df$names <- gene.links[selected.genes.df$names]
     
     output$output_table <- renderDataTable({
       #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
       selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
     },escape=FALSE)
+    
+
   })
   
   ## Visualization of Venn Diagram
   observeEvent(input$button_venn, {
-  gene.selection <- network.data[, input$selected.tfs] == 1
-  venn.list <- rep( list(list()), length(input$selected.tfs) ) 
-  for (i in 1:length(input$selected.tfs)) #For loop to extract columns
-  {
-    venn.list[[i]] <- gene.names[gene.selection[,i]]
-  }
-  
-  #This is the message error for the venn diagram  
-  validate(need(length(input$selected.tfs) == 2,
+    gene.selection <- network.data[, input$selected.tfs] == 1
+    venn.list <- rep( list(list()), length(input$selected.tfs) ) 
+    for (i in 1:length(input$selected.tfs)) #For loop to extract columns
+    {
+      venn.list[[i]] <- gene.names[gene.selection[,i]]
+    }
+    
+    #This is the message error for the venn diagram  
+    validate(need(length(input$selected.tfs) == 2,
                   "Please select exactly two transcription factors"))
     venn.plot <- venn.diagram(venn.list, filename = NULL, alpha=c(0.5,0.5), cex = 2, 
                               cat.fontface=4, category.names=input$selected.tfs,#names(venn.list), 
                               fill=c("red", "darkblue"),
                               main="", main.cex = 2)
-
-  
-  print("VENN")
-  
-  
-  
-  output$vennPlot <- renderPlot({
     
-    grid.draw(venn.plot)},height = 350, width = 350)
-   
+    
+    print("VENN")
+    
+    
+    
+    output$vennPlot <- renderPlot({
+      
+      grid.draw(venn.plot)},height = 350, width = 350)
+    
   })
   
   ##Visualization and intersection between topological parameters and gene clusters
@@ -747,13 +768,11 @@ server <- function(input, output) {
     intersect.genes <- result[3][[1]]$intersection.genes
     
     
-    
     selected.genes.df <- subset(network.data, names %in% intersect.genes)
     # selected.nodes.colors <- selected.colors[selected.genes.df$peak.zt]
     
     # selected.genes.df <- network.data[gene.selection,]
     selected.nodes.colors <- selected.genes.df$color
-    
     
     output$networkPlot <- renderPlot({
       ggplot(network.data, aes(x.pos,y.pos)) +
@@ -799,12 +818,11 @@ server <- function(input, output) {
     output$output_table <- renderDataTable({
       #  selected.genes.df[,c("names","S.name","S.annotation","S.TF/Other","T.cluster")]#as.data.frame(genes.annotation.data.with.links)
       selected.genes.df[,c("names","S.name","S.annotation","T.mapman","T.TF.Other","T.cluster")]
-    },escape=FALSE) 
-    
+    },escape=FALSE)
+
   })
   
 }
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-

@@ -5,8 +5,9 @@ account: frannetworks
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 597719
-bundleId: 1730994
+bundleId: 2112927
 url: https://frannetworks.shinyapps.io/BRC1_transcriptional_network/
-when: 1543575704.77167
+when: 1559031201.5072
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: VennDiagram2019-05-28_06-47-17.log|VennDiagram2019-05-28_06-47-47.log|VennDiagram2019-05-28_06-48-23.log|VennDiagram2019-05-28_06-48-49.log|VennDiagram2019-05-28_06-49-13.log|VennDiagram2019-05-28_07-20-04.log|VennDiagram2019-05-28_07-23-51.log|VennDiagram2019-05-28_07-24-57.log|VennDiagram2019-05-28_07-25-16.log|VennDiagram2019-05-28_07-25-56.log|VennDiagram2019-05-28_07-26-11.log|VennDiagram2019-05-28_07-26-21.log|VennDiagram2019-05-28_07-26-30.log|VennDiagram2019-05-28_07-26-36.log|VennDiagram2019-05-28_07-26-52.log|VennDiagram2019-05-28_07-27-06.log|VennDiagram2019-05-28_07-28-35.log
