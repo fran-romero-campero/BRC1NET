@@ -1,6 +1,0 @@
-In the regulated feedback loop a master regulator controls directly and simultaneously the expression of two transcription factor that in turn regulate each other establishing a feedback loop. This motif has been previously identify at the interface between signalling and developmental network. It has been shown that this motif confers networks the ability of transforming transient signals received by the master regulator into estable responses fixed by the mutual regulation of the transcription factors.
-
-Pedro de los Reyes 1, Francisco J. Romero-Campero 1,2
-
-1 Plant Development Unit, Institute for Plant Biochemistry and Photosynthesis, Universidad de Sevilla - Consejo Superior de Investigaciones Científicas, E- 
-2 Department of Computer Science and Artificial Intelligence, Universidad de Sevilla, E-41012 Seville, Spain
