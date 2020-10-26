@@ -77,9 +77,21 @@ ui <- fluidPage(
                                            TFs targets and the specified gene cluster as well as functional enrichment analysis.")
                                 )
                        )
-      )
+      ),
+      
+      
+      conditionalPanel(condition = "input.navigation_bar == 'github'",
+                       tags$div(align = "justify", tags$b("BRC1NET,"), "is entirely developed using 
+        the R package", tags$b( tags$a(href="https://shiny.rstudio.com/", "shiny.")), "The 
+        source code is released under", tags$b("GNU General Public License v3.0"), "and is hosted at",
+                                tags$b("GitHub."), "If you experience any problem using BRC1NET please create an", tags$b(tags$a(href="https://github.com/fran-romero-campero/BRC1TRANSNET/issues","issue")), "in GitHub and we will address it."),
+                       tags$div(align="center",tags$h1(tags$b(tags$a(href="https://github.com/fran-romero-campero/BRC1TRANSNET", "BRC1NET at GitHub"))))
+      ),
       
     ),
+    
+    
+    
     column(
       width = 2,
       img(src='cnb.jpg', align = "center", width=100),
