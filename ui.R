@@ -223,7 +223,7 @@ ui <- fluidPage(
                                                                       tags$div(align="justify", "In this section you can perform a GO term
                                                                                enrichment analysis over the selected genes. First
                                                                                of all, you need to choose the background set of genes between
-                                                                               the entire genome of", tags$i("Arabidopsis thaliana"), "or just the genes in ATTRACTOR:"),
+                                                                               the entire genome of", tags$i("Arabidopsis thaliana"), "or just the genes in BRC1NET:"),
                                                                       tags$br(),
                                                                       radioButtons(inputId = "go.background", width="100%",selected="allgenome",
                                                                                    label="",
@@ -274,7 +274,7 @@ ui <- fluidPage(
                                                                       tags$div(align="justify", "In this section you can perform a KEGG pathways and modules
                                                                                enrichment analysis over the selected genes. First
                                                                                of all, you need to choose the background set of genes between
-                                                                               the entire genome of", tags$i("Arabidopsis thaliana"), "or just the genes in ATTRACTOR:"),
+                                                                               the entire genome of", tags$i("Arabidopsis thaliana"), "or just the genes in BRC1NET:"),
                                                                       tags$br(),
                                                                       radioButtons(inputId = "pathway_background", width="100%",selected="allgenome",
                                                                                    label="",
