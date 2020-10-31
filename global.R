@@ -77,6 +77,9 @@ tf.colors <- c("gold", "firebrick1", "firebrick2", "firebrick3", "firebrick", "f
                "darkgreen", "paleturquoise3", "rosybrown", "purple", "navyblue", "limegreen", "lightsteelblue3")
 names(tf.colors) <- tfs.names
 
+cluster.names <- c("Cluster UP_C1", "Cluster UP_C2", "Cluster UP_C3", "Cluster UP_C4",
+                   "Cluster UP_C5", "Cluster UP_C6", "Cluster DOWN_C1", "Cluster DOWN_C2",
+                   "Cluster DOWN_C3")
 
 ## Extract gene ids
 genes <- sort(network.data$name)

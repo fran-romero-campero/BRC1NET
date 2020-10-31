@@ -431,7 +431,7 @@ server <- function(input, output, session) {
       list.of.sets[[length(list.of.sets)]] <- rownames(subset(network.data, 
                                                               sapply(strsplit(x = network.data$cluster,split = "|"), cluster.member,cluster = input$cluster)))
       
-      name.of.sets <- c(input$selected.multiple.tfs, input$cluster)
+      name.of.sets <- c(input$selected.multiple.tfs, cluster.names[as.numeric(input$cluster)])
     } else
     {
       name.of.sets <- input$selected.multiple.tfs

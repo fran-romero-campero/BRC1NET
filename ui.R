@@ -182,9 +182,9 @@ ui <- fluidPage(
                             tags$b("Select a gene cluster:"),
                             selectInput(inputId = "cluster", label="", 
                                         choices = c("No selected cluster" = "any", 
-                                                    "Cluster 1" = "1", "Cluster 2" = "2", "Cluster 3" = "3",
-                                                    "Cluster 4" = "4", "Cluster 5" = "5", "Cluster 6" = "6",
-                                                    "Cluster 7" = "7", "Cluster 8" = "8", "Cluster 9" = "9"),
+                                                    "Cluster UP_C1" = "1", "Cluster UP_C2" = "2", "Cluster UP_C3" = "3",
+                                                    "Cluster UP_C4" = "4", "Cluster UP_C5" = "5", "Cluster UP_C6" = "6",
+                                                    "Cluster DOWN_C1" = "7", "Cluster DOWN_C2" = "8", "Cluster DOWN_C3" = "9"),
                                         selected = "any", multiple = FALSE, selectize = TRUE),
                             checkboxInput(inputId =  "edges",label = "Visualize Edges",value = FALSE),
                             
