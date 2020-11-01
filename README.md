@@ -1,4 +1,4 @@
-# BRC1TRANSNET
+# BRC1NET
 
 A web based app developed using the R package shiny to explore the transcriptional network downstream from the Arabidopsis thaliana gene BRC1. This network was constructed from ChIP-seq and DAP-seq data.
 
