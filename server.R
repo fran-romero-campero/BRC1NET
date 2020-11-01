@@ -396,8 +396,6 @@ server <- function(input, output, session) {
     ## Determine targets with the specified expression profile
     selected.genes.df <- network.data[gene.selection,]    
     
-    selected.genes.df$cluster
-    
     if(input$cluster != "any")
     {
       selected.genes.df <- subset(selected.genes.df, 
@@ -612,10 +610,11 @@ server <- function(input, output, session) {
     )
     
     ## Determine targets of selected TFs
-    # selected.tfs.with.zts <- str_replace(string = input$selected.multiple.tfs,pattern = " ",replacement = "_")
-    # selected.only.tfs <- sapply(X = strsplit(x = input$selected.multiple.tfs,split = " "), FUN = get.first)
     selected.tfs.adj <- (network.data[,input$selected.multiple.tfs] != 0)
     
+    ## Determine targets of selected TFs
+    selected.tfs.agi <- tf.ids[input$selected.multiple.tfs]
+
     if(length(input$selected.multiple.tfs) > 1)
     {
       
@@ -635,6 +634,16 @@ server <- function(input, output, session) {
     ## Determine targets with the specified expression profile
     selected.genes.df <- network.data[gene.selection,]    
     
+    
+    ## Determine targets in a specific cluster
+    selected.genes.df <- network.data[gene.selection,]    
+    
+    if(input$cluster != "any")
+    {
+      selected.genes.df <- subset(selected.genes.df, 
+                                  sapply(strsplit(x = selected.genes.df$cluster,split = "|"), cluster.member,cluster = input$cluster))
+    } 
+
     ## GO enrichment analysis
     
     ## Set the background to perform the GO terms enrichment analysis depending on the user selection
@@ -829,6 +838,21 @@ with the corresponding GO term.")
         expr = {
           cnetplot(enrich.go)
         })
+    }  else
+    {
+      output$no_go_results <- renderText({"No GO term enrichment was found."})
+      output$textGOTable <- renderText("")
+      output$output_go_table <- renderDataTable({}) 
+      output$download_ui_for_go_table<- renderUI("")
+      output$revigo<- renderUI("")
+      output$barplot_text <- renderText("")
+      output$gomap_text <- renderText("")
+      output$gomap <- renderPlot("")
+      output$bar.plot <- renderPlot("")
+      output$emapplot_text <- renderText("")
+      output$emap.plot <- renderPlot("")
+      output$cnetplot_text <- renderText("")
+      output$cnet.plot <- renderPlot("")
     }
   })
   
@@ -840,14 +864,14 @@ with the corresponding GO term.")
     )
     
     ## Determine targets of selected TFs
-    # selected.tfs.with.zts <- str_replace(string = input$selected.multiple.tfs,pattern = " ",replacement = "_")
-    # selected.only.tfs <- sapply(X = strsplit(x = input$selected.multiple.tfs,split = " "), FUN = get.first)
     selected.tfs.adj <- (network.data[,input$selected.multiple.tfs] != 0)
+    
+    ## Determine targets of selected TFs
+    selected.tfs.agi <- tf.ids[input$selected.multiple.tfs]
     
     if(length(input$selected.multiple.tfs) > 1)
     {
-      #gene.selection <- rowSums(selected.tfs.adj) == length(input$selected.multiple.tfs)
-      
+
       if(input$selection.mode == "Common gene targets")
       {
         gene.selection <- rowSums(selected.tfs.adj) == length(selected.tfs.agi)
@@ -861,8 +885,15 @@ with the corresponding GO term.")
       gene.selection <- as.vector(selected.tfs.adj)
     }
     
-    ## Determine targets with the specified expression profile
+    
+    ## Determine targets in a specific cluster
     selected.genes.df <- network.data[gene.selection,]    
+    
+    if(input$cluster != "any")
+    {
+      selected.genes.df <- subset(selected.genes.df, 
+                                  sapply(strsplit(x = selected.genes.df$cluster,split = "|"), cluster.member,cluster = input$cluster))
+    } 
     
     ## Set the background to perform pathway enrichment analysis depending on the user selection
     if (input$pathway_background == "allgenome")
@@ -953,9 +984,15 @@ with the corresponding GO term.")
                     row.names=TRUE
           )
         })
-    } else
+    }  else
     {
       output$no_kegg_enrichment <- renderText(expr = "No enriched KEGG pathway was detected in the selected genes.")
+      output$no_pathway_visualization <- renderText(expr = "No enriched KEGG pathway was detected in the selected genes.")
+      output$output_pathway_table <- renderDataTable({""})
+      output$download_ui_for_kegg_table<- renderUI("")
+      output$kegg_selectize <- renderUI("")
+      print("llego aqui perfe")
+      output$kegg_image <- renderImage({filename = "blank.png"})
     }
     
     ## Visualization of specific enriched pathways
