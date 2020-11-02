@@ -18,8 +18,8 @@ ui <- fluidPage(
                    label="",
                    choices=c(
                      "Home" = "home",
-                     "Individual gene analysis" = "individual_gene",
                      "Multiple transcription factor analysis" = "multiple_gene",
+                     "Individual gene analysis" = "individual_gene",
                      "Tutorials" = "tutorials",
                      "GitHub repository" = "github",
                      "Citation and Contact" = "citation"
@@ -32,10 +32,10 @@ ui <- fluidPage(
                        bud dormancy in ", tags$i("Arabidopsis"))),
       tags$br(),tags$br(),
       conditionalPanel(condition = "input.navigation_bar == 'home'",
-                       tags$div(align="justify", "This online tool allows research to explore the transcriptional
+                       tags$div(align="justify", "This online tool allows researchers to explore the transcriptional
           network downstream of", tags$i("BRC1"),". This network was constructed by combining genome-wide transcriptional 
-          profiling of active and dormant buds, and of seedlings after BRC1 induction, with 
-          determination of genome-wide BRC1 binding sites by Chromatin Immunoprecipitation 
+          profiling of active/dormant buds and seedlings after BRC1 induction, with 
+          genome-wide BRC1 binding sites determined by Chromatin Immunoprecipitation 
           sequencing (ChIP-seq). We identified nine co-expressed gene clusters strongly dependent on 
           BRC1 function and, within these clusters, a group of genes encoding TFs which are 
           direct targets of BRC1. This specific set of regulators probably plays a key role 
@@ -64,7 +64,11 @@ ui <- fluidPage(
       
       conditionalPanel(condition = "input.navigation_bar == 'multiple_gene'",
                        tags$div(align="justify", tags$b("BRC1NET"), "allows researchers to explore the coordinated regulation of several 
-                                BRC1-dependent transcription factors or regulators over their common targets. Follow the steps below:", 
+                                BRC1-dependent transcription factors (TFs) over their common targets. The node representing BRC1 is located
+                                at the center. Purple nodes represent BTFs, BRC1 bound Transcription Factors. Red nodes represent BRC1
+                                direct targets. Blue nodes represent differentially expressed genes in seedlings and buds after BRC1 induction 
+                                that are not bound by BRC1. Green nodes represent differentially expressed TFs in seedlings and buds after BRC1 induction 
+                                that are not bound by BRC1. Follow the steps below:", 
                                 
                                 tags$ol(
                                   tags$li("Select your TFs of interest using the", tags$b("Select Transcription Factors"),
@@ -197,7 +201,7 @@ ui <- fluidPage(
                      column(width = 9,
                             tabsetPanel(type = "tabs",
                                         tabPanel(title = "Network Visualization",
-                                                 plotOutput("networkPlot")
+                                                 plotOutput("networkPlot", click="plot_click")
                                         ),
                                         tabPanel(title = "Gene Table",
                                                  dataTableOutput(outputId = "outputTable"),

@@ -355,21 +355,42 @@ server <- function(input, output, session) {
   })
   
   ## Multiple transcription factor code
+
+  ## Initial/default visualization of BRC1NET
+  default.network.visualization <- ggplot(network.data, aes(x.pos,y.pos)) + 
+    theme(panel.background = element_blank(), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.title = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks.y = element_blank()) + 
+    geom_point(color=node.colors,size=1) 
+  ## Plotting current network visualization
+  current.network.visualization <- default.network.visualization
   
-  ## Initial/default visualization of ATTRACTOR
   output$networkPlot <- renderPlot({
-    ggplot(network.data, aes(x.pos,y.pos)) + 
-      theme(panel.background = element_blank(), 
-            panel.grid.major = element_blank(), 
-            panel.grid.minor = element_blank(),
-            axis.title = element_blank(),
-            axis.text = element_blank(),
-            axis.ticks.y = element_blank()) + 
-      geom_point(color=node.colors,size=1)
-  },height = 700)
+    current.network.visualization + 
+      geom_text_repel(data=tfs.network.data,aes(label=alias,fontface="bold"))
+  },height = 900)
+  
+  ## Add label of clicked node
+  observeEvent(eventExpr = input$plot_click,{
+    near.point <- nearPoints(df = network.data,coordinfo = input$plot_click,xvar = "x.pos",yvar = "y.pos")
+  
+    if(nrow(near.point) > 0)
+    {
+      current.network.visualization <- current.network.visualization + 
+          geom_text(data=near.point,aes(label=paste(names,alias,sep=" - "),fontface="bold"))
+      
+      output$networkPlot <- renderPlot({
+        current.network.visualization 
+      },height = 900)
+    }
+  })
+  
   
   ## Determine common targets and perform analysis when button is clicked
-  observeEvent(input$go_multiple, {
+  observeEvent(eventExpr = input$go_multiple, {
     
     ## Determine targets of selected TFs
     selected.tfs.agi <- tf.ids[input$selected.multiple.tfs]
@@ -540,6 +561,8 @@ server <- function(input, output, session) {
     }
     
     ## Target gene representation on the network
+    
+    selected.tfs.network.data <- subset(network.data, names %in% selected.tfs.agi)
     network.representation <- ggplot(network.data, aes(x.pos,y.pos)) + 
       theme(panel.background = element_blank(), 
             panel.grid.major = element_blank(), 
@@ -550,6 +573,11 @@ server <- function(input, output, session) {
       geom_point(color=node.colors,size=1) +
       geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
     
+    
+    current.network.visualization <<- default.network.visualization + 
+      geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
+      
+    
     ## Add edges to the network when selected
     if(input$edges)
     {
@@ -557,7 +585,7 @@ server <- function(input, output, session) {
       {
         tf.xpos <- subset(network.data, names == tf.ids[input$selected.multiple.tfs[i]])[["x.pos"]]
         tf.ypos <- subset(network.data, names == tf.ids[input$selected.multiple.tfs[i]])[["y.pos"]]
-        network.representation <- network.representation +
+        current.network.visualization <<- current.network.visualization +
           annotate("segment",
                    x=rep(tf.xpos,nrow(selected.genes.df)),
                    y=rep(tf.ypos,nrow(selected.genes.df)),
@@ -566,14 +594,35 @@ server <- function(input, output, session) {
                    color="grey", arrow=arrow(type="closed",length=unit(0.1, "cm")))
       }
       
-      network.representation <- network.representation + 
-        geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
-    }
+      # current.network.visualization <<- current.network.visualization + 
+      #   geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21) +
+      #   geom_text_repel(data=selected.tfs.network.data,aes(label=alias,fontface="bold"))
+      # 
+      
+      # current.network.visualization <<- current.network.visualization + 
+      #   geom_text_repel(data=selected.tfs.network.data,aes(label=alias,fontface="bold")) +
+      #   geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21)
+    } 
+    
+    current.network.visualization <<- current.network.visualization + 
+      geom_point(data = selected.genes.df,aes(x.pos,y.pos), size=4, fill=selected.nodes.colors,colour="black",pch=21) +
+      geom_text_repel(data=selected.tfs.network.data,aes(label=alias,fontface="bold"))
     
     ## Update network representation on the app
     output$networkPlot <- renderPlot({
-      network.representation
-    },height = 700)
+     current.network.visualization
+    },height = 900)
+     
+    # near.point <- nearPoints(df = network.data,coordinfo = input$plot_click,xvar = "x.pos",yvar = "y.pos")
+    # 
+    # if(nrow(near.point) > 0)
+    # {
+    #   output$networkPlot <- renderPlot({
+    #     network.representation + 
+    #       geom_text_repel(data=selected.tfs.network.data,aes(label=alias,fontface="bold")) +
+    #       geom_text(data=near.point,aes(label=paste(names,alias,sep=" - "),fontface="bold"))
+    #   },height = 900)
+    # }
     
     ## Output table with gene info
     output$outputTable <- renderDataTable({
@@ -991,7 +1040,6 @@ with the corresponding GO term.")
       output$output_pathway_table <- renderDataTable({""})
       output$download_ui_for_kegg_table<- renderUI("")
       output$kegg_selectize <- renderUI("")
-      print("llego aqui perfe")
       output$kegg_image <- renderImage({filename = "blank.png"})
     }
     

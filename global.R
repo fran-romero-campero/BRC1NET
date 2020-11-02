@@ -12,6 +12,7 @@ library(seqinr)
 library(org.At.tair.db)
 library(igraph)
 library(ggplot2)
+library(ggrepel)
 library(stringr)
 library(clusterProfiler)
 library(pathview)
@@ -36,17 +37,17 @@ pos.data <- t(matrix(data=c(x.coord,y.coord),ncol=2))
 
 ## Transcription factors AGI ids and names
 tfs.names <- c("ATAF1", "bZIP52", "PIF3", "MYB3", "ZAT10", 
-               "ERF055", "VIP1", "ERF014", "NAC018", "NAP", 
-               "ANAC032", "RGA", "HB21", "HB6", "SVP", 
-               "ABI5", "IBH1", "BRC1", "ERF035", "GBF2", 
-               "PDF2", "HSFB2B", "TCX2", "WRKY18", "ABF3", 
-               "HB40", "ZAT6", "DREB2A", "MYB56", "ERF003", 
-               "NAC6/ORE1", "HAT2", "SPCH", "DOF5_4", "NAC102", 
+               "ERF055", "VIP1", "ERF014", "NAC018", "NAP",
+               "ANAC032", "RGA", "HB21", "HB6", "SVP",
+               "ABI5", "IBH1", "BRC1", "ERF035", "GBF2",
+               "PDF2", "HSFB2B", "TCX2", "WRKY18", "ABF3",
+               "HB40", "ZAT6", "DREB2A", "MYB56", "ERF003",
+               "NAC6/ORE1", "HAT2", "SPCH", "DOF5_4", "NAC102",
                "HB53", "HEC1","GBF3")
 
 tf.ids <- c("AT1G01720", "AT1G06850" ,"AT1G09530", "AT1G22640", "AT1G27730",
             "AT1G36060", "AT1G43700", "AT1G44830", "AT1G52880", "AT1G69490",
-            "AT1G77450", "AT2G01570", "AT2G02540", "AT2G22430", "AT2G22540",
+            "AT1G77450", "AT2G01570", "AT2G18550", "AT2G22430", "AT2G22540",
             "AT2G36270", "AT2G43060", "AT3G18550", "AT3G60490", "AT4G01120",
             "AT4G04890", "AT4G11660", "AT4G14770", "AT4G31800", "AT4G34000",
             "AT4G36740", "AT5G04340", "AT5G05410", "AT5G17800", "AT5G25190",
@@ -80,6 +81,8 @@ names(tf.colors) <- tfs.names
 cluster.names <- c("Cluster UP_C1", "Cluster UP_C2", "Cluster UP_C3", "Cluster UP_C4",
                    "Cluster UP_C5", "Cluster UP_C6", "Cluster DOWN_C1", "Cluster DOWN_C2",
                    "Cluster DOWN_C3")
+
+tfs.network.data <- subset(network.data, names %in% tf.ids) 
 
 ## Extract gene ids
 genes <- sort(network.data$name)
