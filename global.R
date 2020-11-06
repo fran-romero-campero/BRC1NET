@@ -119,12 +119,11 @@ line.colors <- c("blue","red", "darkgreen","black","#663300","#99003d","#b3b300"
 area.colors <- c("skyblue","salmon", "lightgreen","lightgrey","#ffcc99","#ff99c2","#ffffb3","#ffe6f9","#ffe6cc","#80ffff","#b3b3ff","#99ff99","#e6e600","#ffb3ff")
 
 ## Load chromosome sequences
-chr1 <- getSequence(read.fasta(file = "data/athaliana_genome/chr1.fa",seqtype = "AA"))[[1]] 
-#chr1 <- getSequence(read.fasta(file = "data/athaliana_genome/chr1.fa",seqtype = "AA"))[[1]]
-chr2 <- getSequence(read.fasta(file = "data/athaliana_genome/chr2.fa",seqtype = "AA"))[[1]]
-chr3 <- getSequence(read.fasta(file = "data/athaliana_genome/chr3.fa",seqtype = "AA"))[[1]]
-chr4 <- getSequence(read.fasta(file = "data/athaliana_genome/chr4.fa",seqtype = "AA"))[[1]]
-chr5 <- getSequence(read.fasta(file = "data/athaliana_genome/chr5.fa",seqtype = "AA"))[[1]]
+chr1 <- readDNAStringSet(filepath = "data/athaliana_genome/chr1.fa")[[1]]
+chr2 <- readDNAStringSet(filepath = "data/athaliana_genome/chr2.fa")[[1]]
+chr3 <- readDNAStringSet(filepath = "data/athaliana_genome/chr3.fa")[[1]]
+chr4 <- readDNAStringSet(filepath = "data/athaliana_genome/chr4.fa")[[1]]
+chr5 <- readDNAStringSet(filepath = "data/athaliana_genome/chr5.fa")[[1]]
 
 ## Function to compute the reverse complement
 reverse.complement <- function(dna.sequence)

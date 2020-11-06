@@ -232,19 +232,19 @@ server <- function(input, output, session) {
           ## Extract peak sequence
           if(peak.chr == "1")
           {
-            peak.sequence <- c2s(chr1[peak.start:peak.end])
+            peak.sequence <- as.character(chr1[peak.start:peak.end])
           } else if(peak.chr == "2")
           {
-            peak.sequence <- c2s(chr2[peak.start:peak.end])
+            peak.sequence <- as.character(chr2[peak.start:peak.end])
           } else if(peak.chr == "3")
           {
-            peak.sequence <- c2s(chr3[peak.start:peak.end])
+            peak.sequence <- as.character(chr3[peak.start:peak.end])
           } else if(peak.chr == "4")
           {
-            peak.sequence <- c2s(chr4[peak.start:peak.end])
+            peak.sequence <- as.character(chr4[peak.start:peak.end])
           } else if(peak.chr == "5")
           {
-            peak.sequence <- c2s(chr5[peak.start:peak.end])
+            peak.sequence <- as.character(chr5[peak.start:peak.end])
           }
           
           peak.rev.comp.sequence <- reverse.complement(peak.sequence)
