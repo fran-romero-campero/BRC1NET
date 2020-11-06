@@ -352,7 +352,7 @@ server <- function(input, output, session) {
       text(x = -50,y = 25*(i-1),labels = currently.selected.tfs[i],adj = 1,col = tf.colors[currently.selected.tfs[i]],font = 2)
     }
     
-  })
+  },height=600)
   
   ## Multiple transcription factor code
 
@@ -364,7 +364,8 @@ server <- function(input, output, session) {
           axis.title = element_blank(),
           axis.text = element_blank(),
           axis.ticks.y = element_blank()) + 
-    geom_point(color=node.colors,size=1) 
+    geom_point(color=node.colors,size=1) +
+    geom_text(data=cluster.pos,aes(label=cluster.name,fontface="bold"),size=8)
   ## Plotting current network visualization
   current.network.visualization <- default.network.visualization
   
