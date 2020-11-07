@@ -59,8 +59,7 @@ names(tf.ids) <- tfs.names
 tfs.order <- c("BRC1", "ABI5", "ABF3", "GBF3", "GBF2", "bZIP52",
                "ANAC032", "ATAF1", "NAC6/ORE1","NAC102", "NAP", "NAC018",
                "HB53","HB40","HB21","HAT2","HB6","PDF2",
-               "MYB56", "MYB3",
-               "HEC1", "SPCH", "IBH1", "PIF3",
+               "MYB56", "MYB3", 
                "ERF003", "DREB2A", "ERF035", "ERF014", "ERF055",
                "ZAT6", "ZAT10",
                "SVP", "WRKY18","HSFB2A","HSFB2B", "DOF5_4", "RGA", "TCX2","VIP1")
@@ -82,7 +81,14 @@ cluster.names <- c("Cluster UP_C1", "Cluster UP_C2", "Cluster UP_C3", "Cluster U
                    "Cluster UP_C5", "Cluster UP_C6", "Cluster DOWN_C1", "Cluster DOWN_C2",
                    "Cluster DOWN_C3")
 
+
+# btf.ids <- c("AT4G36740","AT5G66700","AT2G18550","AT4G01120","AT2G46270","AT4G34000",
+#              "AT2G36270","AT1G77450","AT1G01720","AT1G70000","AT2G40970","AT5G13330",
+#              "AT3G61630","AT5G49700","AT5G44260","AT5G62020","AT1G19050","AT4G31800",
+#              "AT1G07090")
+
 tfs.network.data <- subset(network.data, names %in% tf.ids) 
+
 
 cluster.pos <- data.frame(x.pos = c(-1700,-900,-200,700,900,700,-100,-1100,-1800), 
                           y.pos = c(1200,1900,2050,1300,400,-1500,-2500,-2600,-1000),

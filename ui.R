@@ -65,17 +65,18 @@ ui <- fluidPage(
       conditionalPanel(condition = "input.navigation_bar == 'multiple_gene'",
                        tags$div(align="justify", tags$b("BRC1NET"), "allows researchers to explore the coordinated regulation of several 
                                 BRC1-dependent transcription factors (TFs) over their common targets. The node representing BRC1 is located
-                                at the center. Purple nodes represent BTFs, BRC1 bound Transcription Factors. Red nodes represent BRC1
-                                direct targets. Blue nodes represent differentially expressed genes in seedlings and buds after BRC1 induction 
-                                that are not bound by BRC1. Green nodes represent differentially expressed TFs in seedlings and buds after BRC1 induction 
-                                that are not bound by BRC1. Follow the steps below:", 
+                                at the center. Genes are classified into", tags$b("nine different co-expressed clusters"), "constituted by overexpressed (UP) or
+                                underexpressed (DOWN) genes after BRC1 induction. Red and purple nodes are BRC1 direct targets, blue and green nodes
+                                represent indirect BRC1 targets whereas purple and green nodes denote genes encoding TFs. Follow the steps below to
+                                explore this network:", 
                                 
                                 tags$ol(
                                   tags$li("Select your TFs of interest using the", tags$b("Select Transcription Factors"),
                                           "checkbox menu on the left below."),
                                   tags$li("You can also select a gene cluster using the dropdown menu", tags$b("Select a gene cluster:")),
                                   tags$li("Check the box", tags$b("Visualize Edges"), "when you want to depict arrows from TFs to their target genes."),
-                                  tags$li("Click on the", tags$b("SELECT GENES"), "to visualize your selected TFs common target genes located
+                                  tags$li("Choose between two", tags$b("Modes of selction"), ", either selecting all the target genes or only those common to the selected TFs."),
+                                  tags$li("Click on the", tags$b("SELECT GENES"), "to visualize your selected TFs target genes located
                                            in the specified cluster. Explore the different tabs to 
                                            download a table with the selected genes, perform a signficance analysis of the overlap between the selected 
                                            TFs targets and the specified gene cluster as well as functional enrichment analysis.")
