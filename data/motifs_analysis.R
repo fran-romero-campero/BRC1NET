@@ -125,7 +125,6 @@ for (i in 1:number.randomisation)
 write.table(x = motifs.3.random.graph,file = "motifs/motifs_three_random_graph.txt",quote = F,row.names = F,col.names = F,sep = "\t")
 motifs.3.random.graph <- read.table(file="motifs/motifs_three_random_graph.txt",header=F,as.is=T)
 head(motifs.3.random.graph)
-write.table(x = random.autorregulations,file = "motifs/autorregulation_random_graph.txt",quote = F,row.names = F,col.names = F,sep = "\t")
 
 plot.igraph(graph.isocreate(size=3, number=0))
 
@@ -140,6 +139,9 @@ for(i in 1:16)
 indeces.significant.motifs.3 <- which(estimated.p.values < 0.01) - 1
 write(x = indeces.significant.motifs.3,file = "motifs/indeces_significant_motifs_3.txt",ncolumns = 1)
 
+## Load three nodes motifs indeces
+motifs.3.ind <- read.table(file="indeces_significant_motifs_3.txt")[[1]]
+
 i <- 1
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[i]))
 occurrency.subgraph.three.nodes.in.brc1[motifs.3.ind[i]+1]
@@ -148,8 +150,8 @@ sd(motifs.3.random.graph[,motifs.3.ind[i]+1])
 sum(motifs.3.random.graph[,motifs.3.ind[i]+1] < motifs.3.random.graph[,motifs.3.ind[i]+1])/1000
 i <- i + 1
 
-## Load three nodes motifs indeces
-motifs.3.ind <- read.table(file="indeces_significant_motifs_3.txt")[[1]]
+
+
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[2]))
 
 ## Load three nodes motifs occurences in attractor
