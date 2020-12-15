@@ -50,7 +50,7 @@ ui <- fluidPage(
       conditionalPanel(condition = "input.navigation_bar == 'citation'",
                        tags$div(align = "justify", "We are strongly committed to", tags$b("open access software"), 
                                 "and", tags$b("open science."),"Following our philosophy we have deposited our GitHub code 
-                       into", tags$a(href="https://zenodo.org/record/3780022#.XqwzNvlS9uQ", target="_blank",tags$b("Zenodo")), ", a
+                       into", tags$a(href="https://zenodo.org/record/4323584#.X9k6M8Io8ws", target="_blank",tags$b("Zenodo")), ", a
                        general-purpose open-access repository developed under the", 
                                 tags$a(href="https://www.openaire.eu/", target="_blank", tags$b("European OpenAIRE program.")), 
                                 "A preprint of our manuscript has also been deposited in bioRxiv:",
