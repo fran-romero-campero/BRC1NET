@@ -12,6 +12,7 @@ server <- function(input, output, session) {
   #   }
   # })
   
+
   ## Peak visualizer code
   output$peak_plot <- renderPlot({
     
@@ -366,6 +367,12 @@ server <- function(input, output, session) {
           axis.ticks.y = element_blank()) + 
     geom_point(color=node.colors,size=1) +
     geom_text(data=cluster.pos,aes(label=cluster.name,fontface="bold"),size=8)
+  
+  ## Network for visualization intro
+  output$introPlot <- renderPlot({
+    default.network.visualization
+  },height = 800)
+
   ## Plotting current network visualization
   current.network.visualization <- default.network.visualization
   

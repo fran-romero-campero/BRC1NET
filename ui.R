@@ -42,9 +42,34 @@ ui <- fluidPage(
           together with BRC1 in mediating amplification and maintenance of the observed 
           transcriptional responses triggered by BRC1. Use the navigation bar on the left to obtain
           insights into the molecular mechanisms that operate directly downstream of BRC1 to promote axillary 
-          bud arrest.")
+          bud arrest."),
+                       plotOutput("introPlot")
       ),
       
+      ## Conditional for citation
+      conditionalPanel(condition = "input.navigation_bar == 'citation'",
+                       tags$div(align = "justify", "We are strongly committed to", tags$b("open access software"), 
+                                "and", tags$b("open science."),"Following our philosophy we have deposited our GitHub code 
+                       into", tags$a(href="https://zenodo.org/record/3780022#.XqwzNvlS9uQ", target="_blank",tags$b("Zenodo")), ", a
+                       general-purpose open-access repository developed under the", 
+                                tags$a(href="https://www.openaire.eu/", target="_blank", tags$b("European OpenAIRE program.")), 
+                                "A preprint of our manuscript has also been deposited in bioRxiv:",
+                                tags$br(),
+                                tags$br(),
+                                tags$div(
+                                  tags$a(href="https://www.biorxiv.org/content/10.1101/2020.12.14.394403v1", target="_blank", tags$b("Sam W. van Es, Aitor Munoz-Gasca, Francisco J. Romero-Campero, Eduardo Gonzalez-Grandio, 
+                            Pedro de los Reyes, Carlos Tarancon, Aalt D.J. van Dijk, Wilma van Esse, Gerco C. Angenent, Richard Immink, Pilar Cubas (2020) 
+                            A gene regulatory network critical for axillary bud dormancy directly controlled by Arabidopsis BRANCHED1, doi: https://doi.org/10.1101/2020.12.14.394403 ")
+                                         
+                                         ))),
+                       
+                       tags$br(),
+                       tags$br(),
+                       #tags$div(align="center", img(src='smiley.png', align = "center", width=200,hight=200)),
+                       tags$br()
+                       
+      ),
+
       conditionalPanel(condition = "input.navigation_bar == 'individual_gene'",
                        tags$div(align="justify", tags$b("BRC1NET"), "allows researchers to explore the coordinated regulation of several
                BRC1 dependent transcription factors over an", tags$b("individually selected"), "gene. Follow the steps below:",
@@ -90,7 +115,7 @@ ui <- fluidPage(
         the R package", tags$b( tags$a(href="https://shiny.rstudio.com/", "shiny.")), "The 
         source code is released under", tags$b("GNU General Public License v3.0"), "and is hosted at",
                                 tags$b("GitHub."), "If you experience any problem using BRC1NET please create an", tags$b(tags$a(href="https://github.com/fran-romero-campero/BRC1TRANSNET/issues","issue")), "in GitHub and we will address it."),
-                       tags$div(align="center",tags$h1(tags$b(tags$a(href="https://github.com/fran-romero-campero/BRC1TRANSNET", "BRC1NET at GitHub"))))
+                       tags$div(align="center",tags$h1(tags$b(tags$a(href="https://github.com/fran-romero-campero/BRC1NET", "BRC1NET at GitHub"))))
       ),
       
     ),
@@ -173,8 +198,7 @@ ui <- fluidPage(
                      )
                    )
   ),
-  
-  
+
   ## Conditional panel for multiple transcription factors and regulators analysis
   conditionalPanel(condition = "input.navigation_bar == 'multiple_gene'",
                    fluidRow(
