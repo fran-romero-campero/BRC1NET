@@ -370,11 +370,12 @@ server <- function(input, output, session) {
   
   ## Network for visualization intro
   output$introPlot <- renderPlot({
-    default.network.visualization
+    default.network.visualization + 
+      geom_text_repel(data=tfs.network.data,aes(label=alias,fontface="bold"))
   },height = 800)
 
   ## Plotting current network visualization
-  current.network.visualization <- default.network.visualization
+  current.network.visualization <- default.network.visualization 
   
   output$networkPlot <- renderPlot({
     current.network.visualization + 
