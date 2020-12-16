@@ -14,7 +14,7 @@ server <- function(input, output, session) {
   
   ## video tutorial
   output$video_tutorial <- renderUI({
-    HTML("<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/watch?v=aOQ9cZPy1l4\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe>")
+    HTML("<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/aOQ9cZPy1l4\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>")
   }) 
 
   ## Peak visualizer code
