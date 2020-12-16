@@ -69,6 +69,16 @@ ui <- fluidPage(
                        tags$br()
                        
       ),
+      
+      ## Conditional panel for video tutorial
+      conditionalPanel(condition = "input.navigation_bar == 'tutorials'",
+                       tags$div(align="center",uiOutput("video_tutorial")),
+                       tags$div(align = "justify", 
+                                tags$br(),
+                                tags$br(),
+                                tags$div(tags$h4(tags$b("Above you can find a video tutorial on how to use the different tools implemented 
+                                in BRC1NET to explore the transcriptional network downstream from the ", tags$i("Arabidopsis thaliana "), 
+                                "transcription factor BRANCHED1"))))),
 
       conditionalPanel(condition = "input.navigation_bar == 'individual_gene'",
                        tags$div(align="justify", tags$b("BRC1NET"), "allows researchers to explore the coordinated regulation of several
