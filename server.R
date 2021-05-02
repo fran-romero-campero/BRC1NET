@@ -17,6 +17,9 @@ server <- function(input, output, session) {
     HTML("<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/aOQ9cZPy1l4\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>")
   }) 
 
+  ## Server side for target.gene selectize
+  updateSelectizeInput(session,inputId =  "target.gene", choices = genes.selectize, server = TRUE)
+  
   ## Peak visualizer code
   output$peak_plot <- renderPlot({
     

@@ -158,7 +158,7 @@ ui <- fluidPage(
                             ## Select target gene to study
                             selectizeInput(inputId = "target.gene",
                                            label = "Target Gene:",
-                                           choices = genes.selectize,
+                                           choices = NULL, #genes.selectize,
                                            multiple = FALSE),
                             
                             ## Check box for the TF peaks to represent
