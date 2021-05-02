@@ -142,7 +142,8 @@ ui <- fluidPage(
       tags$br(),
       tags$br(),
       tags$div(align = "center", width=60,
-               HTML("<script type=\"text/javascript\" id=\"clstr_globe\" src=\"//clustrmaps.com/globe.js?d=444jQllIhH-hM07Zehu_i5ENUTxfV-dOb2uxYzFH43I\"></script>")
+              #HTML("<script type=\"text/javascript\" id=\"clstr_globe\" src=\"//clustrmaps.com/globe.js?d=444jQllIhH-hM07Zehu_i5ENUTxfV-dOb2uxYzFH43I\"></script>")
+              HTML("<script type=\"text/javascript\" src=\"//rf.revolvermaps.com/0/0/2.js?i=5lnqjnbsiy1&amp;m=6&amp;s=130&amp;c=ff0000&amp;t=1\" async=\"async\"></script>")
       )
     )
   ),
