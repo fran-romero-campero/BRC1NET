@@ -1,11 +1,9 @@
+## Load igraph library
 library(igraph)
 
 ##Load the network data
 network.data <- read.table(file="brc1_network.tsv",header = TRUE,as.is=TRUE,sep="\t",quote = "",comment.char = "%")
 rownames(network.data) <- network.data$names
-
-setdiff(tfs.names,colnames(network.data))
-setdiff(colnames(network.data),tfs.names)
 
 tfs.names <- c("ATAF1", "bZIP52", "PIF3", "MYB3", "ZAT10", 
                "ERF055", "VIP1", "ERF014", "NAC018", "NAP", 
@@ -30,6 +28,8 @@ names(tf.ids) <- tfs.names
 
 tf.ids["BRC1"]
 
+setdiff(tfs.names,colnames(network.data))
+setdiff(colnames(network.data),tfs.names)
 
 ## Generate adjacency matrix
 tf.targets <- network.data[,tfs.names]
@@ -65,13 +65,14 @@ in.degree <- degree(brc1.graph,mode = "in")
 sum(table(in.degree))
 
 hist(in.degree)
+hist(degree(brc1.graph),breaks=500,xlim=c(0,50))
 
 write.graph(graph = brc1.graph,file = "brc1net.gml",format = "gml")
 
 ## Network motif with three nodes
 
 ## graph.motifs inputs consists of a network and a subgraph size k
-## (only k= 3 or 4 are supported). It outputs the number of occurencies
+## (only k= 3 or 4 are supported). It outputs the number of occurrences
 ## of any subgraph of size k in the given network.
 
 occurrency.subgraph.three.nodes.in.brc1 <- graph.motifs(brc1.graph, size=3)
@@ -102,27 +103,57 @@ number.randomisation <- 10000
 
 random.autorregulations <- vector(mode = "numeric", length = number.randomisation)
 motifs.3.random.graph <- matrix(0,nrow=number.randomisation, ncol=16)
+moments.random.graph <- matrix(0,nrow=number.randomisation,ncol=5)
+
 
 random.tfs <- sample(x=1:number.nodes, size=number.tfs,replace=FALSE)
 
+install.packages("moments")
+library(moments)
+
+gsize(brc1.graph)
+gorder(brc1.graph)
+brc1.mean <- mean(degree(brc1.graph))
+brc1.var <- var(degree(brc1.graph))
+brc1.skewness <- skewness(degree(brc1.graph))
+
 for (i in 1:number.randomisation)
 {
-  print(paste0("motif 3 ",i))
-  
-  current.random.adjacency <- matrix(0,nrow=number.nodes,ncol=number.nodes)
-  
+ ## Print to keep track of the process 
+ print(paste0("motif 3 ",i))
+ 
+ ## Initialize random adjancency matrix with zeros
+ current.random.adjacency <- matrix(0,nrow=number.nodes,ncol=number.nodes)
+ 
+ ## Randomly select the nodes that will act as TFs with the same number of 
+ ## targets as the original BRC1NET
+ random.tfs <- sample(x=1:number.nodes, size=number.tfs,replace=FALSE)
+ 
+ 
   for(j in 1:length(random.tfs))
   {
     current.random.adjacency[random.tfs[j], sample(x=1:number.nodes, tfs.out.degree[j], replace=FALSE)] <- 1
   }
   
   current.random.network <- graph.adjacency(adjmatrix = current.random.adjacency,mode = "directed")
+  moments.random.graph[i,1] <- mean(degree(current.random.network)) 
+  moments.random.graph[i,2] <- var(degree(current.random.network))
+  moments.random.graph[i,3] <- 100*abs(var(degree(current.random.network)) - brc1.var)/brc1.var
+  moments.random.graph[i,4] <- skewness(degree(current.random.network))
+  moments.random.graph[i,5] <- 100*abs(skewness(degree(current.random.network)) - brc1.skewness)/brc1.skewness
   
   #random.autorregulations[i] <- sum(diag(current.random.adjacency))
   motifs.3.random.graph[i,] <- graph.motifs(current.random.network, size=3)
 }
 
 write.table(x = motifs.3.random.graph,file = "motifs/motifs_three_random_graph.txt",quote = F,row.names = F,col.names = F,sep = "\t")
+write.table(x = moments.random.graph,file = "motifs/random_networks_moments.txt",quote = F,row.names = F,col.names = F,sep = "\t")
+
+random.network.moments <- read.table(file = "motifs/random_networks_moments.txt",header = T)
+head(random.network.moments)
+summary(random.network.moments[[3]])
+summary(random.network.moments[[5]])
+
 motifs.3.random.graph <- read.table(file="motifs/motifs_three_random_graph.txt",header=F,as.is=T)
 head(motifs.3.random.graph)
 
@@ -154,7 +185,7 @@ i <- i + 1
 
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[2]))
 
-## Load three nodes motifs occurences in attractor
+## Load three nodes motifs occurrences in attractor
 occurrences.3 <- read.table(file="occurency_subgraph_three_nodes_in_brc1.txt")[[1]]
 
 ## Motif 1
@@ -303,11 +334,6 @@ write.table(x = motif.3.instances,file = "motifs/feedback_loop_with_multiple_out
 ## Motif 3
 plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[8]))
 occurrences.3[motifs.3.ind[8] + 1]
-
-
-
-
-# No muy interesante
 
 
 tf.ids <- setdiff(tf.ids,"AT3G18550" )
