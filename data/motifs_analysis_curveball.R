@@ -119,7 +119,7 @@ plot.igraph(graph.isocreate(size=3, number=15))
 
 ## Generate randomisation ----------
 number.randomisation <- 10000 # 10000
-Ncurve <- 10000 # Number of curveball steps
+Ncurve <- 110000 # Number of curveball steps
 
 random.autorregulations <- vector(mode = "numeric", length = number.randomisation)
 motifs.3.random.graph <- matrix(0,nrow=number.randomisation, ncol=16)
@@ -211,14 +211,16 @@ occurrency.subgraph.three.nodes.in.brc1[motifs.3.ind[i]+1]
 mean(motifs.3.random.graph[,motifs.3.ind[i]+1]) # 232.126
 sd(motifs.3.random.graph[,motifs.3.ind[i]+1]) # 20.258
 sum(motifs.3.random.graph[,motifs.3.ind[i]+1] < motifs.3.random.graph[,motifs.3.ind[i]+1])/1000 # ??
-#i <- i + 1
-#plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[i]))
+
+i <- i + 1
+plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[i]))
 #i <- i + 1
 #plot.igraph(graph.isocreate(size=3, number=motifs.3.ind[i]))
 
 
 
 ## Load three nodes motifs occurrences in attractor ----------
+i=1
 occurrences.3 <- read.table(file="motifs/occurency_subgraph_three_nodes_in_brc1_curveball.txt")[[1]]
 
 ## Motif 1 -----
