@@ -7,7 +7,7 @@ A web based app developed using the R package shiny to explore the transcription
 * **Francisco J. Romero-Campero**
 * **Pilar Cubas**
 * **Pedro de los Reyes**
-
+* **Alberto Pascual-García**
 
 ## Contact:
 
